@@ -1,0 +1,13 @@
+.navbarMain{
+    background-color: violet;
+    display: flex;
+    flex: row;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.navbar-nav-items{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
