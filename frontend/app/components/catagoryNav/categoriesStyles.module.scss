@@ -1,0 +1,41 @@
+.categoriesMainLayout {
+  display: flex;
+  flex-direction: row;
+  padding: 20px;
+  gap: 10px;
+  justify-content: end;
+  align-items: end;
+}
+
+.categoriesButtons {
+  font-weight: bold;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 24px;
+  cursor: pointer;
+  text-transform: capitalize;
+  border-radius: 12px;
+  width: 100px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.08);
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(64, 64, 232, 0.866);
+    color: white;
+  }
+}
+
+.activeButton {
+  background-color: orange;
+  color: white;
+}
+
+.categoriesButtons:not(.activeButton):hover {
+  background-color: rgba(64, 64, 232, 0.866);
+}
