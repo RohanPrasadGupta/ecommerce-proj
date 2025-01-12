@@ -1,0 +1,127 @@
+.mainLayout {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+  gap: 50px;
+  margin-top: 40px;
+  padding: 20px;
+}
+
+.imageLayout {
+  border: 2px solid black;
+  border-radius: 24px;
+  padding: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.08);
+
+  img {
+    width: 1200px;
+    height: 400px;
+    cursor: pointer;
+    :hover {
+      transition: box-shadow 0.3s ease;
+    }
+  }
+}
+
+.descLayout {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 5px;
+
+  p {
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+}
+
+.specificationLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  p {
+    font-weight: bold;
+    text-transform: capitalize;
+    span {
+      font-weight: normal;
+    }
+  }
+}
+
+.description {
+  font-weight: normal !important;
+  text-transform: none !important;
+  text-align: justify;
+  width: 100%;
+}
+
+.priceLayout {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.discountLayout {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 0, 0, 0.826);
+  padding: 0px 15px;
+  font-weight: bold;
+  font-style: italic;
+  color: #ffff;
+  border-radius: 24px;
+  .discountTag {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.getPrice {
+  span {
+    color: green;
+    font-weight: bold;
+    font-style: italic;
+  }
+}
+
+.orgPrice {
+  text-decoration: line-through;
+  color: gray;
+  font-style: italic;
+}
+
+.quantityLayout {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+
+  .quantityStyle {
+    font-style: italic;
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  .cartButton {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(63 78 79);
+    padding: 10px 15px;
+    font-weight: bold;
+    font-style: italic;
+    color: #ffff;
+    border-radius: 24px;
+    cursor: pointer;
+  }
+}
