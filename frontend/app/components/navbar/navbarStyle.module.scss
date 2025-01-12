@@ -1,13 +1,35 @@
-.navbarMain{
-    background-color: violet;
-    display: flex;
-    flex: row;
-    justify-content: space-between;
-    padding: 10px;
+.navbarMain {
+  background-color: violet;
+  display: flex;
+  flex: row;
+  justify-content: space-between;
+  padding: 10px;
 }
 
-.navbar-nav-items{
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
+.navbar-nav-items {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.cartButtonDiv {
+  padding: 2px 15px;
+  color: white;
+  background-color: rgb(197, 7, 7);
+  border-radius: 24px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(197, 7, 7, 0.92);
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15),
+      0px 2px 4px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.cartButton {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
 }

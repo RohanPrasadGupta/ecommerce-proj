@@ -3,9 +3,10 @@ import React, { useRef } from "react";
 import styles from "./productLayoutStyle.module.scss";
 import image from "./bird.jpg";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 function ProductLayout({ data, setSelectedProductId }) {
-  // console.log(data);
+  const router = useRouter();
 
   const TitleLength = (title) => {
     if (title.length > 20) {
@@ -17,20 +18,11 @@ function ProductLayout({ data, setSelectedProductId }) {
   const givenPrice = data.price - (data.price * data.discount) / 100;
 
   const handleClick = (productId) => {
-    console.log("clicked", productId);
-    window.location.href = `/pages/productDetail`;
-    setSelectedProductId(productId);
+    router.push(`/pages/productDetail?id=${productId}`);
   };
 
   return (
-    <Link
-      href={{
-        pathname: "/pages/productDetail",
-        query: { id: data.id },
-      }}
-      // onClick={() => handleClick(data.id)}
-      className={styles.mainLayout}
-    >
+    <div onClick={() => handleClick(data.id)} className={styles.mainLayout}>
       <img src={data.image} alt="Image" className={styles.imageStyle} />
       <div className={styles.descLayout}>
         <p>{TitleLength(data.title)}</p>
@@ -49,7 +41,7 @@ function ProductLayout({ data, setSelectedProductId }) {
           )}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 

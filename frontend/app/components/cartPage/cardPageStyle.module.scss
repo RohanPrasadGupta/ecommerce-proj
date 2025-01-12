@@ -1,0 +1,87 @@
+.mainLayout {
+  display: grid;
+  grid-template-columns: 1fr 0.5fr;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 30px;
+}
+
+.leftLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.cartItemsLayout {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  background-color: white;
+  padding: 20px;
+  width: 700px;
+  border-radius: 24px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15),
+      0px 2px 4px rgba(0, 0, 0, 0.12);
+  }
+  .imageStyle {
+    height: 100px;
+    width: 100px;
+  }
+}
+
+.priceTag {
+  font-size: 16px;
+  line-height: 24px;
+
+  span {
+    font-style: italic;
+    color: green;
+  }
+}
+
+.inStock {
+  color: green;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.outOfStock {
+  color: red;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.quantityLayout {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 5px 0px;
+  align-items: center;
+}
+
+.quantityBtnStyle {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.incDecBtn {
+  border-radius: 50%;
+  border: none;
+  &:hover {
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15),
+      0px 2px 4px rgba(0, 0, 0, 0.12);
+    transform: scale(1.1);
+    transition: 0.3s ease;
+  }
+}
+
+.quantityStyle {
+  font-style: italic;
+}

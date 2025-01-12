@@ -41,16 +41,12 @@ function Page() {
     );
   }
 
-  console.log(selectCategory);
-
   return (
     <MainLayout>
       {selectedProductId !== null ? (
         <ProductDetail />
       ) : (
         <>
-          <div>Dashboard page</div>
-
           <CatagoryNav setSelectCategory={setSelectCategory} />
 
           <div className={styles.mainProducts}>
