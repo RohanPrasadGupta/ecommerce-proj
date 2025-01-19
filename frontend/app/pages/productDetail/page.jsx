@@ -1,6 +1,6 @@
 import React from "react";
 import MainLayout from "../page";
-import ProductDetail from "@/app/components/productDetail/ProductDetail";
+import ProductDetail from "../../components/productDetail/ProductDetail";
 
 function page() {
   return (

@@ -1,11 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import MainLayout from "../page";
-import AllProduct from "@/app/services/dataFetch";
-import ProductLayout from "@/app/components/products/ProductLayout";
+import ProductLayout from "../../components/products/ProductLayout";
 import styles from "./dashboardStyle.module.scss";
-import CatagoryNav from "@/app/components/catagoryNav/CatagoryNav";
-import ProductDetail from "@/app/components/productDetail/ProductDetail";
+import CatagoryNav from "../../components/catagoryNav/CatagoryNav";
+import ProductDetail from "../../components/productDetail/ProductDetail";
 
 function Page() {
   const [selectCategory, setSelectCategory] = useState("all");

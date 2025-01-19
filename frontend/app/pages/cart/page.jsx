@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import MainLayout from "../page";
-import CartPage from "@/app/components/cartPage/CartPage";
+import CartPage from "../../components/cartPage/CartPage";
 
 function page() {
   return (
