@@ -1,59 +1,32 @@
 import React, { useEffect, useState } from "react";
-import testImage from "./test.png";
-import Image from "next/image";
 import styles from "./cardPageStyle.module.scss";
 import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
-
-const TestData = [
-  {
-    id: 1,
-    title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-    color: "black",
-    price: 109.95,
-    discount: 10,
-    image: testImage,
-    isAvaiable: true,
-    quantity: 1,
-  },
-  {
-    id: 2,
-    title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-    color: "black",
-    price: 109.95,
-    discount: 10,
-    image: testImage,
-    isAvaiable: true,
-    quantity: 2,
-  },
-  {
-    id: 3,
-    title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-    color: "red",
-    price: 109.95,
-    discount: 10,
-    image: testImage,
-    isAvaiable: false,
-    quantity: 5,
-  },
-];
+import { useSelector, useDispatch } from "react-redux";
+import { addItem, removeItem } from "../../redux/storeSlice/cartSlice";
 
 function CartPage() {
-  const [quantity, setQuantity] = useState(0);
+  const cartItems = useSelector((state) => state.cartItems.value);
+  const dispatch = useDispatch();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    console.log("items", cartItems);
+  }, [cartItems]);
+
+  if (cartItems.length === 0) {
+    return (
+      <div className={styles.emptyCartLayout}>
+        <p>Cart is empty</p>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.mainLayout}>
       <div className={styles.leftLayout}>
-        {TestData.map((item) => (
+        {cartItems.map((item) => (
           <div key={item.id} className={styles.cartItemsLayout}>
             <div>
-              <Image
-                className={styles.imageStyle}
-                sizes={5}
-                src={item.image}
-                alt="Image"
-              />
+              <img className={styles.imageStyle} src={item.image} alt="Image" />
             </div>
             <div>
               <p>{item.title}</p>
@@ -75,7 +48,7 @@ function CartPage() {
                     <button>
                       <CiCirclePlus className={styles.incDecBtn} size={20} />
                     </button>
-                    <p className={styles.quantityStyle}>{quantity}</p>
+                    <p className={styles.quantityStyle}>{item.quantity}</p>
                     <button>
                       <CiCircleMinus className={styles.incDecBtn} size={20} />
                     </button>
