@@ -7,6 +7,7 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CardActions from "@mui/material/CardActions";
 import Rating from "@mui/material/Rating";
 import Box from "@mui/material/Box";
+import { useRouter } from "next/navigation";
 
 const labels = {
   0.5: "Useless",
@@ -22,11 +23,17 @@ const labels = {
 };
 
 const MuiProductLayout = ({ data }) => {
+  const router = useRouter();
   const maxCharDescription = (desc) => {
     if (desc.length > 100) {
       return desc.slice(0, 50) + "...";
     }
     return desc;
+  };
+
+  const handleClick = (productId) => {
+    console.log(productId);
+    router.push(`/pages/productDetail?id=${productId}`);
   };
 
   return (
@@ -37,7 +44,13 @@ const MuiProductLayout = ({ data }) => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
+        cursor: "pointer",
+        "&:hover": {
+          boxShadow:
+            "0px 6px 10px rgba(0, 0, 0, 0.15), 0px 2px 4px rgba(0, 0, 0, 0.12)",
+        },
       }}
+      onClick={() => handleClick(data.id)}
     >
       <CardActionArea>
         <CardMedia
