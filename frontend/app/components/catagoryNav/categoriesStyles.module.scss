@@ -3,8 +3,8 @@
   flex-direction: row;
   padding: 20px;
   gap: 10px;
-  justify-content: end;
-  align-items: end;
+  justify-content: center;
+  align-items: center;
 }
 
 .categoriesButtons {
@@ -38,4 +38,11 @@
 
 .categoriesButtons:not(.activeButton):hover {
   background-color: rgba(64, 64, 232, 0.866);
+}
+
+.resetButton {
+  &:hover {
+    scale: 1.1;
+    transition: scale 0.3s ease;
+  }
 }

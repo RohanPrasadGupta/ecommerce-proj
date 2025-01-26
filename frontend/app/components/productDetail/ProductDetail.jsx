@@ -4,12 +4,16 @@ import React, { useEffect, useState } from "react";
 import styles from "./productDetails.module.scss";
 import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import { IoBagHandleSharp } from "react-icons/io5";
+import { useSelector, useDispatch } from "react-redux";
+import { addItem, removeItem } from "../../redux/storeSlice/cartSlice";
+import toast, { Toaster } from "react-hot-toast";
 
 function ProductDetail() {
   const searchParams = useSearchParams();
   const [productData, setProductData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [itemQuantity, setItemQuantity] = useState(1);
+  const dispatch = useDispatch();
 
   const productId = searchParams.get("id");
 
@@ -19,7 +23,7 @@ function ProductDetail() {
         `https://fakestoreapi.in/api/products/${productId}`
       );
       const res = await data.json();
-      console.log(res.product);
+      console.log(res);
       setProductData(res?.product);
       setLoading(false);
     };
@@ -33,6 +37,22 @@ function ProductDetail() {
 
   const givenPrice =
     productData.price - (productData.price * productData.discount) / 100;
+
+  const handleAddTOCart = () => {
+    try {
+      dispatch(
+        addItem({
+          ...productData,
+          price: productData.discount ? givenPrice : productData.price,
+          quantity: itemQuantity,
+          isAvaiable: true,
+        })
+      );
+      toast.success("Item added to cart");
+    } catch (error) {
+      toast.error("Unable to add item to cart");
+    }
+  };
 
   return (
     <div className={styles.mainLayout}>
@@ -86,7 +106,7 @@ function ProductDetail() {
           >
             <CiCircleMinus size={40} />
           </button>
-          <button className={styles.cartButton}>
+          <button onClick={handleAddTOCart} className={styles.cartButton}>
             <IoBagHandleSharp />
             Add to Cart
           </button>

@@ -1,3 +1,4 @@
+"use client";
 import Navbar from "./components/navbar/Navbar";
 import MainLayout from "./pages/page";
 
