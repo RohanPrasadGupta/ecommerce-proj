@@ -5,24 +5,25 @@ import ProductLayout from "../../components/products/ProductLayout";
 import styles from "./dashboardStyle.module.scss";
 import CatagoryNav from "../../components/catagoryNav/CatagoryNav";
 import ProductDetail from "../../components/productDetail/ProductDetail";
+import MuiProductLayout from "../../components/products/MuiProductLayout";
+import LoaderComp from "../../components/loadingPage/LoaderComp";
 
 function Page() {
-  const [selectCategory, setSelectCategory] = useState("all");
-  const [data, setData] = useState([]);
-  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [newSelectCategory, setNewSelectCategory] = useState("");
+  const [newData, setNewData] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const apiCategory = `/category?type=${selectCategory}`;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchApi = `https://fakestoreapi.in/api/products`;
+        const fetchApi = `https://dummyjson.com/products`;
         const products = await fetch(
-          selectCategory === "all" ? fetchApi : `${fetchApi}${apiCategory}`
+          newSelectCategory
+            ? `${fetchApi}/category/${newSelectCategory}`
+            : fetchApi
         );
         const res = await products.json();
-        setData(res?.products);
+        setNewData(res.products || []);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -30,38 +31,24 @@ function Page() {
       }
     };
     fetchData();
-  }, [selectCategory]);
+  }, [newSelectCategory]);
 
   if (loading) {
     return (
       <MainLayout>
-        <div>Loading....</div>
+        <LoaderComp />
       </MainLayout>
     );
   }
 
   return (
     <MainLayout>
-      {selectedProductId !== null ? (
-        <ProductDetail />
-      ) : (
-        <>
-          <CatagoryNav setSelectCategory={setSelectCategory} />
-
-          <div className={styles.mainProducts}>
-            {data.map((product) => {
-              return (
-                <div key={product.id}>
-                  <ProductLayout
-                    setSelectedProductId={setSelectedProductId}
-                    data={product}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </>
-      )}
+      <CatagoryNav setSelectCategory={setNewSelectCategory} />
+      <div className={styles.mainProducts}>
+        {newData.map((product) => (
+          <MuiProductLayout key={product.id} data={product} />
+        ))}
+      </div>
     </MainLayout>
   );
 }
