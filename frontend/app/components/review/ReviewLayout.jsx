@@ -4,7 +4,7 @@ import { deepOrange } from "@mui/material/colors";
 import Rating from "@mui/material/Rating";
 
 const ReviewLayout = ({ data }) => {
-  console.log(data);
+  //   console.log(data);
 
   const hideUserNameFunction = (name) => {
     if (name.length > 4) {

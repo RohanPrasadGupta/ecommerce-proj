@@ -25,7 +25,7 @@ function ProductDetail() {
     const fetchData = async () => {
       const data = await fetch(`https://dummyjson.com/products/${productId}`);
       const res = await data.json();
-      console.log(res);
+      // console.log(res);
       setProductData(res);
       setLoading(false);
     };
