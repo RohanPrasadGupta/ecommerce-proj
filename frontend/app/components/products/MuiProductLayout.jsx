@@ -37,25 +37,24 @@ const MuiProductLayout = ({ data }) => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        gap: 2,
       }}
     >
       <CardActionArea>
         <CardMedia
           component="img"
-          height="100"
+          height="100%"
           image={data.thumbnail}
           alt={data.title}
         />
-        <CardContent sx={{ height: "100px" }}>
-          <Typography gutterBottom sx={{ fontSize: "1rem" }} component="div">
-            {data.title}
-          </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            {maxCharDescription(data.description)}
-          </Typography>
-        </CardContent>
       </CardActionArea>
+      <CardContent sx={{ height: "100px" }}>
+        <Typography gutterBottom sx={{ fontSize: "1rem" }} component="div">
+          {data.title}
+        </Typography>
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          {maxCharDescription(data.description)}
+        </Typography>
+      </CardContent>
       <CardActions>
         <Rating
           name="half-rating"
