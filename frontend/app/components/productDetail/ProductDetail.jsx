@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import styles from "./productDetails.module.scss";
 import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import { IoBagHandleSharp } from "react-icons/io5";
@@ -12,7 +12,7 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import ReviewLayout from "../review/ReviewLayout";
 import Rating from "@mui/material/Rating";
 
-function ProductDetail() {
+function ProductDetailContent() {
   const searchParams = useSearchParams();
   const [productData, setProductData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,7 +31,7 @@ function ProductDetail() {
     };
 
     fetchData();
-  }, []);
+  }, [productId]);
 
   if (loading) {
     return <div>Loading....</div>;
@@ -181,4 +181,12 @@ function ProductDetail() {
   );
 }
 
-export default ProductDetail;
+// export default ProductDetail;
+
+export default function ProductDetail() {
+  return (
+    <Suspense fallback={<div>Loading Product Details...</div>}>
+      <ProductDetailContent />
+    </Suspense>
+  );
+}
