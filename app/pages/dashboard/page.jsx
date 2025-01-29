@@ -33,22 +33,20 @@ function Page() {
     fetchData();
   }, [newSelectCategory]);
 
-  if (loading) {
-    return (
-      <MainLayout>
-        <LoaderComp />
-      </MainLayout>
-    );
-  }
-
   return (
     <MainLayout>
-      <CatagoryNav setSelectCategory={setNewSelectCategory} />
-      <div className={styles.mainProducts}>
-        {newData.map((product) => (
-          <MuiProductLayout key={product.id} data={product} />
-        ))}
-      </div>
+      {loading ? (
+        <LoaderComp />
+      ) : (
+        <>
+          <CatagoryNav setSelectCategory={setNewSelectCategory} />
+          <div className={styles.mainProducts}>
+            {newData.map((product) => (
+              <MuiProductLayout key={product.id} data={product} />
+            ))}
+          </div>
+        </>
+      )}
     </MainLayout>
   );
 }

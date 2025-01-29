@@ -46,7 +46,9 @@ function ProductDetailContent() {
       dispatch(
         addItem({
           ...productData,
-          price: productData.discount ? givenPrice : productData.price,
+          price: productData.discount
+            ? givenPrice.toFixed(2)
+            : productData.price.toFixed(2),
           quantity: itemQuantity,
           isAvaiable: true,
         })
