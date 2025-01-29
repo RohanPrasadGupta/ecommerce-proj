@@ -36,6 +36,10 @@ const MuiProductLayout = ({ data }) => {
     router.push(`/pages/productDetail?id=${productId}`);
   };
 
+  console.log(data);
+
+  const givenPrice = data.price - (data.price * data.discountPercentage) / 100;
+
   return (
     <Card
       sx={{
@@ -68,14 +72,24 @@ const MuiProductLayout = ({ data }) => {
           {maxCharDescription(data.description)}
         </Typography>
       </CardContent>
-      <CardActions>
+      <CardActions
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Rating
           name="half-rating"
           defaultValue={Math.floor(data.rating)}
           precision={0.5}
           readOnly
         />
-        <Box sx={{ ml: 2 }}>{labels[Math.floor(data.rating)]}</Box>
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <Box sx={{ ml: 2, color: "green", fontWeight: "bold" }}>
+            ${givenPrice.toFixed(2)}
+          </Box>
+        </div>
       </CardActions>
     </Card>
   );
