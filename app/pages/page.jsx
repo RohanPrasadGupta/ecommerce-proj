@@ -4,11 +4,11 @@ import Navbar from "../components/navbar/Navbar";
 import store from "../redux/store/store";
 import { Provider } from "react-redux";
 import { Toaster } from "react-hot-toast";
-function MainLayout(prop) {
+function MainLayout({ children }) {
   return (
     <Provider store={store}>
       <Navbar />
-      <div>{prop.children}</div>
+      <div>{children}</div>
 
       <Toaster
         position="right-top"

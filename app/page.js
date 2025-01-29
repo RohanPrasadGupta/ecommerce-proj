@@ -1,7 +1,13 @@
 "use client";
-import Navbar from "./components/navbar/Navbar";
-import MainLayout from "./pages/page";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return <MainLayout />;
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push("/pages/dashboard");
+  }, [router]);
+
+  return null;
 }
