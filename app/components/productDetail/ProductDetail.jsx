@@ -46,9 +46,7 @@ function ProductDetailContent() {
       dispatch(
         addItem({
           ...productData,
-          price: productData.discount
-            ? givenPrice.toFixed(2)
-            : productData.price.toFixed(2),
+          price: productData.discount ? givenPrice : productData.price,
           quantity: itemQuantity,
           isAvaiable: true,
         })
@@ -60,104 +58,108 @@ function ProductDetailContent() {
   };
 
   return (
-    <div className={styles.mainLayout}>
-      <div className={styles.imageLayout}>
-        <img src={productData?.thumbnail} alt="Image" />
-      </div>
-      <div className={styles.descLayout}>
-        <p>{productData?.title}</p>
+    <>
+      <div className={styles.mainLayout}>
+        <div className={styles.imageLayout}>
+          <img src={productData?.thumbnail} alt="Image" />
+        </div>
+        <div className={styles.descLayout}>
+          <p>{productData?.title}</p>
 
-        <div className={styles.priceLayout}>
-          {productData.discountPercentage && (
-            <p className={styles.orgPrice}>{productData.price}</p>
-          )}
+          <div className={styles.priceLayout}>
+            {productData.discountPercentage && (
+              <p className={styles.orgPrice}>{productData.price.toFixed(2)}</p>
+            )}
 
-          <p className={styles.getPrice}>
-            <span>$</span>
-            {productData.discountPercentage ? givenPrice : productData.price}
-          </p>
-          {productData.discountPercentage && (
-            <p className={styles.discountLayout}>
-              <span className={styles.discountTag}>
-                {productData.discountPercentage}%
-              </span>
-              <span>Off</span>
+            <p className={styles.getPrice}>
+              <span>$</span>
+              {productData.discountPercentage
+                ? givenPrice.toFixed(2)
+                : productData.price.toFixed(2)}
             </p>
-          )}
-        </div>
+            {productData.discountPercentage && (
+              <p className={styles.discountLayout}>
+                <span className={styles.discountTag}>
+                  {productData.discountPercentage}%
+                </span>
+                <span>Off</span>
+              </p>
+            )}
+          </div>
 
-        <div className={styles.specificationLayout}>
-          <p>
-            Brand: <span>{productData?.brand}</span>
-          </p>
-          <p>
-            Category: <span>{productData?.category}</span>
-          </p>
-          <p>
-            Return Policy:
-            <span>{productData?.returnPolicy || "No Return"}</span>
-          </p>
-          <p>
-            In Stock:
-            <span>{productData?.stock || "No Stock"}</span>
-          </p>
-          <p>
-            Warranty Information:
-            <span>{productData?.warrantyInformation || "No Warranty"}</span>
-          </p>
-        </div>
-        <p className={styles.description}>{productData?.description}</p>
+          <div className={styles.specificationLayout}>
+            <p>
+              Brand: <span>{productData?.brand}</span>
+            </p>
+            <p>
+              Category: <span>{productData?.category}</span>
+            </p>
+            <p>
+              Return Policy:{" "}
+              <span>{productData?.returnPolicy || " No Return"}</span>
+            </p>
+            <p>
+              In Stock: <span>{productData?.stock || "No Stock"}</span>
+            </p>
+            <p>
+              Warranty Information:{" "}
+              <span>{productData?.warrantyInformation || "No Warranty"}</span>
+            </p>
+          </div>
+          <p className={styles.description}>{productData?.description}</p>
 
-        <div className={styles.quantityLayout}>
-          <button
-            onClick={() => {
-              itemQuantity < productData.stock &&
-                setItemQuantity(itemQuantity + 1);
-            }}
-          >
-            <AddCircleOutlineIcon
-              fontSize="large"
-              sx={{
-                color: "black",
-                fontWeight: "normal",
-                "&:hover": {
-                  scale: 1.1,
-                  transition: "all 0.2s ease-in-out",
-                },
+          <div className={styles.quantityLayout}>
+            <button
+              onClick={() => {
+                itemQuantity < productData.stock &&
+                  setItemQuantity(itemQuantity + 1);
               }}
-            />
-          </button>
-          <p className={styles.quantityStyle}>{itemQuantity}</p>
-          <button
-            onClick={() => {
-              if (itemQuantity > 1) setItemQuantity(itemQuantity - 1);
-            }}
-          >
-            <RemoveCircleOutlineIcon
-              fontSize="large"
-              sx={{
-                color: "black",
-                fontWeight: "normal",
-                "&:hover": {
-                  scale: 1.1,
-                  transition: "all 0.2s ease-in-out",
-                },
+            >
+              <AddCircleOutlineIcon
+                fontSize="large"
+                sx={{
+                  color: "black",
+                  fontWeight: "normal",
+                  "&:hover": {
+                    scale: 1.1,
+                    transition: "all 0.2s ease-in-out",
+                  },
+                }}
+              />
+            </button>
+            <p className={styles.quantityStyle}>{itemQuantity}</p>
+            <button
+              onClick={() => {
+                if (itemQuantity > 1) setItemQuantity(itemQuantity - 1);
               }}
-            />
-          </button>
-          <button onClick={handleAddTOCart} className={styles.cartButton}>
-            <IoBagHandleSharp />
-            Add to Cart
-          </button>
+            >
+              <RemoveCircleOutlineIcon
+                fontSize="large"
+                sx={{
+                  color: "black",
+                  fontWeight: "normal",
+                  "&:hover": {
+                    scale: 1.1,
+                    transition: "all 0.2s ease-in-out",
+                  },
+                }}
+              />
+            </button>
+            <button onClick={handleAddTOCart} className={styles.cartButton}>
+              <IoBagHandleSharp />
+              Add to Cart
+            </button>
+          </div>
         </div>
       </div>
-      <div>
+      <div style={{ padding: "0px 30px" }}>
         <div
           style={{
             display: "flex",
             flexDirection: "row",
             gap: "10px",
             alignItems: "center",
+            fontWeight: "bold",
           }}
         >
           <p style={{ fontWeight: "bold", fontSize: "20px" }}>
@@ -179,7 +181,7 @@ function ProductDetailContent() {
           <div>No Reviews</div>
         )}
       </div>
-    </div>
+    </>
   );
 }
 

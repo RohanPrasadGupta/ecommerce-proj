@@ -36,15 +36,6 @@ const ReviewLayout = ({ data }) => {
           {data.reviewerName[0]}
         </Avatar>
         <p style={{ fontWeight: "bold" }}>{data.reviewerName}</p>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-          marginLeft: "10px",
-        }}
-      >
         <div
           style={{
             display: "flex",
@@ -60,7 +51,15 @@ const ReviewLayout = ({ data }) => {
             readOnly
           />
         </div>
-
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          marginLeft: "10px",
+        }}
+      >
         <p>{data?.comment}</p>
       </div>
     </div>
