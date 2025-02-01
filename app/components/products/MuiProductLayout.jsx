@@ -36,8 +36,6 @@ const MuiProductLayout = ({ data }) => {
     router.push(`/pages/productDetail?id=${productId}`);
   };
 
-  console.log(data);
-
   const givenPrice = data.price - (data.price * data.discountPercentage) / 100;
 
   return (
