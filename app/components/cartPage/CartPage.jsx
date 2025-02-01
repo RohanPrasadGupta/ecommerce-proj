@@ -12,6 +12,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import DeleteComponent from "../deleteComp/DeleteComponent";
+import Checkbox from "@mui/material/Checkbox";
 
 function CartPage() {
   const [isModelOpen, setIsModelOpen] = useState(false);
@@ -46,6 +47,12 @@ function CartPage() {
     setDeleteItem(item);
   };
 
+  const [checked, setChecked] = React.useState(true);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
+
   return (
     <div className={styles.mainLayout}>
       {isModelOpen && (
@@ -65,14 +72,14 @@ function CartPage() {
       <div className={styles.leftLayout}>
         {cartItems.map((item) => (
           <div key={item.id} className={styles.cartItemsLayout}>
-            <div>
+            <div style={{ width: "20%" }}>
               <img
                 className={styles.imageStyle}
                 src={item.thumbnail}
                 alt="Image"
               />
             </div>
-            <div>
+            <div style={{ width: "80%" }}>
               <p style={{ fontWeight: "bold", fontSize: "20px" }}>
                 {item.title}
               </p>
@@ -91,7 +98,13 @@ function CartPage() {
               >
                 {item.isAvaiable ? `In Stock (${item.stock})` : "Out of stock"}
               </p>
-              <div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
                 <div className={styles.quantityLayout}>
                   <p>Qty: </p>
                   <div className={styles.quantityBtnStyle}>
@@ -151,6 +164,11 @@ function CartPage() {
                     />
                   </button>
                 </div>
+                <Checkbox
+                  checked={checked}
+                  onChange={handleChange}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
               </div>
             </div>
           </div>
