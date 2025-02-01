@@ -30,9 +30,9 @@ export default function RootLayout({ children }) {
           containerStyle={{ margin: "30px" }}
           toastOptions={{
             success: {
-              duration: 5000,
+              duration: 3000,
             },
-            error: { duration: 5000 },
+            error: { duration: 3000 },
             style: {
               fontSize: "16px",
               maxWidth: "500px",
