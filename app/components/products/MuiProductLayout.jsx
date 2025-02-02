@@ -32,7 +32,6 @@ const MuiProductLayout = ({ data }) => {
   };
 
   const handleClick = (productId) => {
-    console.log(productId);
     router.push(`/pages/productDetail?id=${productId}`);
   };
 
