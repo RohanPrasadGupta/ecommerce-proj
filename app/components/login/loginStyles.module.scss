@@ -1,0 +1,19 @@
+.loginMainLayout {
+  background: "#070e18";
+  border-radius: "12px";
+  display: "flex";
+  flex-direction: "column";
+  gap: "10px";
+  align-items: "center";
+  justify-content: "center";
+  padding: "80px";
+  color: white;
+  position: "absolute";
+  top: "50%";
+  left: "50%";
+  transform: "translate(-50%, -50%)";
+  width: 400;
+  background-color: "background.paper";
+  border: "2px solid #000";
+  box-shadow: 24;
+}
