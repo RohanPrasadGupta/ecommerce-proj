@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./navbarStyle.module.scss";
 import Link from "next/link";
 import { MdShoppingCart } from "react-icons/md";
@@ -10,6 +10,7 @@ import PersonTwoToneIcon from "@mui/icons-material/PersonTwoTone";
 import Modal from "@mui/material/Modal";
 import LoginUser from "../login/LoginUser";
 import UserLoginSignup from "../login/UserLoginSignup";
+import ProfilerContaier from "../login/ProfilerContaier";
 
 const style = {
   position: "absolute",
@@ -25,15 +26,26 @@ const style = {
 };
 function Navbar() {
   const router = useRouter();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const handleOpen = () => setOpen(true);
+
+  useEffect(() => {
+    console.log("user", user);
+  }, [user]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+  };
 
   return (
     <nav className={styles.navbarMain}>
       {open && (
         <Modal open={open}>
           <div style={style}>
-            <UserLoginSignup setOpen={setOpen} />
+            <UserLoginSignup setUser={setUser} setOpen={setOpen} />
           </div>
         </Modal>
       )}
@@ -68,12 +80,16 @@ function Navbar() {
             <p>Cart</p>
           </button>
         </div>
-        <div className={styles.cartButtonDiv}>
-          <button onClick={handleOpen} className={styles.cartButton}>
-            <PersonTwoToneIcon />
-            <p>Login</p>
-          </button>
-        </div>
+        {user !== null ? (
+          <ProfilerContaier />
+        ) : (
+          <div className={styles.cartButtonDiv}>
+            <button onClick={handleOpen} className={styles.cartButton}>
+              <PersonTwoToneIcon />
+              <p>Login</p>
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   );

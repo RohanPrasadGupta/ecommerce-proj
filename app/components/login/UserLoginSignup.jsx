@@ -1,11 +1,19 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LoginUser from "./LoginUser";
 import SignupUser from "./SignupUser";
 import CloseIcon from "@mui/icons-material/Close";
 
-const UserLoginSignup = ({ setOpen }) => {
+const UserLoginSignup = ({ setOpen, setUser }) => {
   const [loginType, setLoginType] = useState("signin");
+
+  useEffect(() => {
+    // Fetch user details from localStorage
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   return (
     <>
@@ -53,7 +61,11 @@ const UserLoginSignup = ({ setOpen }) => {
                 Sign Up
               </button>
             </div>
-            {loginType === "signin" ? <LoginUser /> : <SignupUser />}
+            {loginType === "signin" ? (
+              <LoginUser setUser={setUser} />
+            ) : (
+              <SignupUser setOpen={setOpen} />
+            )}
           </div>
 
           <div
@@ -64,7 +76,10 @@ const UserLoginSignup = ({ setOpen }) => {
               height: "100%",
             }}
           >
-            <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/authentication/illustration.svg" />
+            <img
+              alt="signupLoginImage"
+              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/authentication/illustration.svg"
+            />
           </div>
         </div>
       </div>
