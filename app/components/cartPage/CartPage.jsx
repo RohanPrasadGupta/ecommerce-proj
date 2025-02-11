@@ -76,6 +76,7 @@ function CartPage() {
       {isModelOpen && (
         <DeleteComponent
           title="Product"
+          isModelOpen={isModelOpen}
           deleteFunction={() => {
             dispatch(removeItem(deleteItem));
             setIsModelOpen(false);

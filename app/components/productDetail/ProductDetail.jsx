@@ -6,7 +6,7 @@ import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import { IoBagHandleSharp } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
 import { addItem, removeItem } from "../../redux/storeSlice/cartSlice";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import ReviewLayout from "../review/ReviewLayout";

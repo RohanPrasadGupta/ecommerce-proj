@@ -1,9 +1,9 @@
 .navbarMain {
-  background-color: violet;
+  background-color: #111827;
   display: flex;
   flex: row;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 10px 50px;
 }
 
 .navbar-nav-items {
@@ -15,7 +15,7 @@
 .cartButtonDiv {
   padding: 2px 15px;
   color: white;
-  background-color: rgb(197, 7, 7);
+  background-color: #db2cff;
   border-radius: 24px;
   cursor: pointer;
   display: flex;
@@ -25,7 +25,7 @@
   align-items: center;
 
   &:hover {
-    background-color: rgba(197, 7, 7, 0.92);
+    background-color: #9f32b4;
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15),
       0px 2px 4px rgba(0, 0, 0, 0.12);
   }
@@ -34,7 +34,7 @@
 .cartButton {
   display: flex;
   flex-direction: row;
-  gap: 5px;
+  gap: 10px;
   justify-content: center;
   align-items: center;
 }

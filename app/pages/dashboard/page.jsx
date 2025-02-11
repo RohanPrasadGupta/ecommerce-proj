@@ -4,11 +4,15 @@ import MainLayout from "../page";
 import ProductLayout from "../../components/products/ProductLayout";
 import styles from "./dashboardStyle.module.scss";
 import CatagoryNav from "../../components/catagoryNav/CatagoryNav";
-import ProductDetail from "../../components/productDetail/ProductDetail";
 import MuiProductLayout from "../../components/products/MuiProductLayout";
 import LoaderComp from "../../components/loadingPage/LoaderComp";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
 
-function Page() {
+function PageContent() {
   const [newSelectCategory, setNewSelectCategory] = useState("");
   const [newData, setNewData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,6 +37,15 @@ function Page() {
     fetchData();
   }, [newSelectCategory]);
 
+  // const { isPending, error, data } = useQuery({
+  //   queryFn: () =>
+  //     fetch("https://dummyjson.com/products").then((res) => res.json()),
+  // });
+
+  // useEffect(() => {
+  //   console.log(isPending, error, data);
+  // }, [isPending, error, data]);
+
   return (
     <MainLayout>
       {loading ? (
@@ -51,4 +64,12 @@ function Page() {
   );
 }
 
-export default Page;
+export default function Page() {
+  const [queryClient] = useState(() => new QueryClient());
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <PageContent />
+    </QueryClientProvider>
+  );
+}
