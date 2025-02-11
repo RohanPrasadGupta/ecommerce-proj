@@ -6,11 +6,6 @@ import styles from "./dashboardStyle.module.scss";
 import CatagoryNav from "../../components/catagoryNav/CatagoryNav";
 import MuiProductLayout from "../../components/products/MuiProductLayout";
 import LoaderComp from "../../components/loadingPage/LoaderComp";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
 
 function PageContent() {
   const [newSelectCategory, setNewSelectCategory] = useState("");
@@ -65,11 +60,5 @@ function PageContent() {
 }
 
 export default function Page() {
-  const [queryClient] = useState(() => new QueryClient());
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      <PageContent />
-    </QueryClientProvider>
-  );
+  return <PageContent />;
 }

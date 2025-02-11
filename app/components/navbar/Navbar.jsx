@@ -24,15 +24,11 @@ const style = {
   alignItems: "center",
   justifyContent: "center",
 };
-function Navbar() {
+function Navbar({ user, setUser }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const handleOpen = () => setOpen(true);
 
-  useEffect(() => {
-    console.log("user", user);
-  }, [user]);
+  const handleOpen = () => setOpen(true);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -81,7 +77,7 @@ function Navbar() {
           </button>
         </div>
         {user !== null ? (
-          <ProfilerContaier />
+          <ProfilerContaier handleLogout={handleLogout} />
         ) : (
           <div className={styles.cartButtonDiv}>
             <button onClick={handleOpen} className={styles.cartButton}>
