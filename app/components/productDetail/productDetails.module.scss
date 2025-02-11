@@ -1,3 +1,7 @@
+.pageLayout {
+  padding: 30px;
+}
+
 .mainLayout {
   display: grid;
   grid-template-columns: 0.5fr 1fr;
@@ -102,7 +106,7 @@
   flex-direction: row;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 10px;
 
   .quantityStyle {
     font-style: italic;
