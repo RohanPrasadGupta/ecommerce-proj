@@ -11,6 +11,14 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import ReviewLayout from "../review/ReviewLayout";
 import Rating from "@mui/material/Rating";
+import BackButton from "../Buttons/BackButton";
+import Chip from "@mui/material/Chip";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
+import Divider from "@mui/material/Divider";
+import LoaderComp from "../loadingPage/LoaderComp";
+import Card from "@mui/material/Card";
 
 function ProductDetailContent() {
   const searchParams = useSearchParams();
@@ -20,12 +28,33 @@ function ProductDetailContent() {
   const dispatch = useDispatch();
 
   const productId = searchParams.get("id");
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  useEffect(() => {
+    if (productData) {
+      setSelectedImage(productData.thumbnail);
+    }
+  }, [productData]);
+  const avgRating = productData?.rating ? Number(productData.rating) : 0;
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("LoginUser:", user);
+  }, [user]);
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetch(`https://dummyjson.com/products/${productId}`);
       const res = await data.json();
-      // console.log(res);
+      console.log(res);
       setProductData(res);
       setLoading(false);
     };
@@ -34,7 +63,7 @@ function ProductDetailContent() {
   }, [productId]);
 
   if (loading) {
-    return <div>Loading....</div>;
+    return <LoaderComp />;
   }
 
   const givenPrice =
@@ -58,55 +87,125 @@ function ProductDetailContent() {
   };
 
   return (
-    <>
-      <div className={styles.mainLayout}>
-        <div className={styles.imageLayout}>
-          <img src={productData?.thumbnail} alt="Image" />
+    <div className={styles.pageLayout}>
+      <BackButton />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="space-y-4">
+          <div className="aspect-square relative">
+            <img
+              src={selectedImage}
+              alt={productData.title}
+              className="w-full h-full object-cover rounded-lg"
+            />
+          </div>
+
+          {productData.images && productData.images.length > 0 && (
+            <div className="grid grid-cols-4 gap-2">
+              {productData.images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`${productData.title} - ${index + 1}`}
+                  className="aspect-square object-cover rounded-md cursor-pointer hover:opacity-80"
+                  onClick={() => setSelectedImage(image)}
+                />
+              ))}
+            </div>
+          )}
         </div>
-        <div className={styles.descLayout}>
-          <p>{productData?.title}</p>
 
-          <div className={styles.priceLayout}>
-            {productData.discountPercentage && (
-              <p className={styles.orgPrice}>{productData.price.toFixed(2)}</p>
-            )}
+        <div className="space-y-6">
+          <div>
+            <Chip label={productData.category && <>{productData.category}</>} />
 
-            <p className={styles.getPrice}>
-              <span>$</span>
-              {productData.discountPercentage
-                ? givenPrice.toFixed(2)
-                : productData.price.toFixed(2)}
-            </p>
-            {productData.discountPercentage && (
-              <p className={styles.discountLayout}>
-                <span className={styles.discountTag}>
-                  {productData.discountPercentage}%
-                </span>
-                <span>Off</span>
+            <h1 className="text-3xl font-bold">{productData.title}</h1>
+            <div className="flex items-center gap-4 mt-2">
+              {productData.discountPercentage && (
+                <p className={`text-2xl font-semibold ${styles.orgPrice}`}>
+                  {productData.price.toFixed(2)}
+                </p>
+              )}
+              <p className="text-2xl font-semibold">
+                $
+                {productData.discountPercentage
+                  ? givenPrice.toFixed(2)
+                  : productData.price.toFixed(2)}
               </p>
-            )}
-          </div>
+              {productData.discountPercentage && (
+                <>
+                  <Chip
+                    label={`${productData.discountPercentage} % OFF`}
+                    sx={{
+                      backgroundColor: "#f50057",
+                      color: "white",
+                      border: "none",
+                    }}
+                  />
+                </>
+              )}
+            </div>
 
-          <div className={styles.specificationLayout}>
-            <p>
-              Brand: <span>{productData?.brand}</span>
-            </p>
-            <p>
-              Category: <span>{productData?.category}</span>
-            </p>
-            <p>
-              Return Policy:{" "}
-              <span>{productData?.returnPolicy || " No Return"}</span>
-            </p>
-            <p>
-              In Stock: <span>{productData?.stock || "No Stock"}</span>
-            </p>
-            <p>
-              Warranty Information:{" "}
-              <span>{productData?.warrantyInformation || "No Warranty"}</span>
-            </p>
+            <div className="flex items-center gap-2 mt-2">
+              <Rating
+                name="half-rating"
+                defaultValue={Math.floor(productData?.rating)}
+                precision={0.5}
+                readOnly
+              />
+              <span className="text-sm text-gray-600">
+                {avgRating > 0 ? `(${avgRating} rating)` : "(No ratings yet)"}
+              </span>
+            </div>
+
+            <p className="text-gray-600 mt-2">{productData.description}</p>
+
+            <div className="space-y-4 bg-gray-50 p-4 rounded-lg mt-2">
+              {productData.sku && (
+                <div className="flex items-center gap-2">
+                  <Inventory2OutlinedIcon className="h-5 w-5 text-gray-500" />
+                  <span>SKU: {productData.sku}</span>
+                </div>
+              )}
+              {productData.shippingInformation && (
+                <div className="flex items-center gap-2">
+                  <LocalShippingOutlinedIcon className="h-5 w-5 text-gray-500" />
+                  <span>{productData.shippingInformation}</span>
+                </div>
+              )}
+              {productData.warrantyInformation && (
+                <div className="flex items-center gap-2">
+                  <ShieldOutlinedIcon className="h-5 w-5 text-gray-500" />
+                  <span>{productData.warrantyInformation}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2 mt-2">
+              <div className="text-sm">
+                <span className="font-medium">Availability:</span>{" "}
+                <Chip
+                  label={
+                    productData.availabilityStatus ||
+                    (productData.stock > 0 ? "In Stock" : "Out of Stock")
+                  }
+                  sx={{ background: "black", color: "white" }}
+                />
+              </div>
+              {productData.brand && (
+                <p className="text-sm">
+                  <span className="font-medium">Brand:</span>{" "}
+                  {productData.brand}
+                </p>
+              )}
+              {productData.returnPolicy && (
+                <p className="text-sm">
+                  <span className="font-medium">Return Policy:</span>{" "}
+                  {productData.returnPolicy}
+                </p>
+              )}
+            </div>
           </div>
-          <p className={styles.description}>{productData?.description}</p>
 
           <div className={styles.quantityLayout}>
             <button
@@ -152,36 +251,36 @@ function ProductDetailContent() {
           </div>
         </div>
       </div>
-      <div style={{ padding: "0px 30px" }}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: "10px",
-            alignItems: "center",
-            fontWeight: "bold",
-          }}
-        >
-          <p style={{ fontWeight: "bold", fontSize: "20px" }}>
-            Reviews: ({productData?.reviews.length})
-          </p>
-          <Rating
-            name="half-rating"
-            defaultValue={Math.floor(productData?.rating)}
-            precision={0.5}
-            readOnly
-          />
-          {productData?.rating}
+
+      <Divider className="my-12" />
+
+      <section>
+        <h2 className="text-2xl font-semibold mb-6">Customer Reviews</h2>
+        <div className="space-y-6">
+          {productData?.reviews.map((review, index) => (
+            <Card key={index} className="p-6">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <span className="font-medium">{review.reviewerName}</span>
+                  <div className="flex items-center gap-1 mt-1">
+                    <Rating
+                      name="half-rating"
+                      defaultValue={Math.floor(productData?.rating)}
+                      precision={0.5}
+                      readOnly
+                    />
+                  </div>
+                </div>
+                <span className="text-sm text-gray-500">
+                  {new Date(review.date).toLocaleDateString()}
+                </span>
+              </div>
+              <p className="text-gray-600 mt-2">{review.comment}</p>
+            </Card>
+          ))}
         </div>
-        {productData?.reviews ? (
-          productData?.reviews.map((review, index) => (
-            <ReviewLayout key={index} data={review} />
-          ))
-        ) : (
-          <div>No Reviews</div>
-        )}
-      </div>
-    </>
+      </section>
+    </div>
   );
 }
 

@@ -1,0 +1,24 @@
+.backButtonContainer {
+  border-radius: 12px;
+  border: solid 1px #111827;
+  width: fit-content;
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  color: black;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #111827;
+    color: white;
+  }
+}
