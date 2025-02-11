@@ -21,6 +21,19 @@ function ProductDetailContent() {
 
   const productId = searchParams.get("id");
 
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("LoginUser:", user);
+  }, [user]);
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetch(`https://dummyjson.com/products/${productId}`);
