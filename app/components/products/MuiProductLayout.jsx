@@ -51,7 +51,7 @@ const MuiProductLayout = ({ data }) => {
             "0px 6px 10px rgba(0, 0, 0, 0.15), 0px 2px 4px rgba(0, 0, 0, 0.12)",
         },
       }}
-      onClick={() => handleClick(data.id)}
+      onClick={() => handleClick(data._id)}
     >
       <CardActionArea>
         <CardMedia

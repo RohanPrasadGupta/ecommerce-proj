@@ -6,51 +6,44 @@ import styles from "./dashboardStyle.module.scss";
 import CatagoryNav from "../../components/catagoryNav/CatagoryNav";
 import MuiProductLayout from "../../components/products/MuiProductLayout";
 import LoaderComp from "../../components/loadingPage/LoaderComp";
+import { useQuery } from "@tanstack/react-query";
 
 function PageContent() {
-  const [newSelectCategory, setNewSelectCategory] = useState("");
   const [newData, setNewData] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  const { isPending, error, data } = useQuery({
+    queryKey: ["getAllProducts"],
+    queryFn: async () => {
+      const response = await fetch(
+        "https://e-combackend-jbal.onrender.com/getAllProducts"
+      );
+      if (!response.ok) throw new Error("Failed to fetch products");
+      return response.json();
+    },
+  });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchApi = `https://dummyjson.com/products`;
-        const products = await fetch(
-          newSelectCategory
-            ? `${fetchApi}/category/${newSelectCategory}`
-            : fetchApi
-        );
-        const res = await products.json();
-        setNewData(res.products || []);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [newSelectCategory]);
-
-  // const { isPending, error, data } = useQuery({
-  //   queryFn: () =>
-  //     fetch("https://dummyjson.com/products").then((res) => res.json()),
-  // });
-
-  // useEffect(() => {
-  //   console.log(isPending, error, data);
-  // }, [isPending, error, data]);
+    if (data?.data?.products) {
+      setNewData(data.data.products);
+    }
+    // console.log(
+    //   "isPending, error, data",
+    //   isPending,
+    //   error,
+    //   data?.data?.products
+    // );
+  }, [isPending, error, data]);
 
   return (
     <MainLayout>
-      {loading ? (
+      {isPending ? (
         <LoaderComp />
       ) : (
         <>
-          <CatagoryNav setSelectCategory={setNewSelectCategory} />
+          {/* <CatagoryNav setSelectCategory={setNewSelectCategory} /> */}
           <div className={styles.mainProducts}>
             {newData.map((product) => (
-              <MuiProductLayout key={product.id} data={product} />
+              <MuiProductLayout key={product._id} data={product} />
             ))}
           </div>
         </>
