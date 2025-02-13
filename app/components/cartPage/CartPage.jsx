@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styles from "./cardPageStyle.module.scss";
-import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import { useSelector, useDispatch } from "react-redux";
 import {
   addItem,
@@ -30,11 +29,6 @@ function CartPage() {
   const itemSelected = useSelector((state) => state.cartSelectItems.value);
 
   const sippingCharge = 3;
-
-  // useEffect(() => {
-  //   console.log("items", cartItems);
-  //   console.log("itemSelected", itemSelected);
-  // }, [cartItems, itemSelected]);
 
   if (cartItems.length === 0) {
     return <EmptyData windowHeight="90vh" text="Your cart is empty." />;
@@ -90,7 +84,7 @@ function CartPage() {
 
       <div className={styles.leftLayout}>
         {cartItems.map((item) => (
-          <div key={item.id} className={styles.cartItemsLayout}>
+          <div key={item._id} className={styles.cartItemsLayout}>
             <div style={{ width: "20%" }}>
               <img
                 className={styles.imageStyle}

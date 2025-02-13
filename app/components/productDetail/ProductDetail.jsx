@@ -19,14 +19,13 @@ import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import Divider from "@mui/material/Divider";
 import LoaderComp from "../loadingPage/LoaderComp";
 import Card from "@mui/material/Card";
+import { useQuery } from "@tanstack/react-query";
 
-function ProductDetailContent() {
+function ProductDetail() {
   const searchParams = useSearchParams();
   const [productData, setProductData] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [itemQuantity, setItemQuantity] = useState(1);
   const dispatch = useDispatch();
-
   const productId = searchParams.get("id");
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -50,25 +49,41 @@ function ProductDetailContent() {
     console.log("LoginUser:", user);
   }, [user]);
 
+  const {
+    isPending,
+    error,
+    data: newData,
+  } = useQuery({
+    queryKey: ["getAllProducts"],
+    queryFn: async () => {
+      const response = await fetch(
+        `https://e-combackend-jbal.onrender.com/product?id=${productId}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch products");
+      return response.json();
+    },
+  });
+
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetch(`https://dummyjson.com/products/${productId}`);
-      const res = await data.json();
-      console.log(res);
-      setProductData(res);
-      setLoading(false);
-    };
+    if (newData?.data?.product) {
+      setProductData(newData?.data?.product);
+    }
 
-    fetchData();
-  }, [productId]);
+    console.log(
+      "isPending, error, data",
+      isPending,
+      error,
+      newData?.data?.product
+    );
+  }, [isPending, error, newData]);
 
-  if (loading) {
+  if (isPending) {
     return <LoaderComp />;
   }
 
   const givenPrice =
-    productData.price -
-    (productData.price * productData.discountPercentage) / 100;
+    productData?.price -
+    (productData?.price * productData?.discountPercentage) / 100;
 
   const handleAddTOCart = () => {
     try {
@@ -95,14 +110,14 @@ function ProductDetailContent() {
           <div className="aspect-square relative">
             <img
               src={selectedImage}
-              alt={productData.title}
+              alt={productData?.title}
               className="w-full h-full object-cover rounded-lg"
             />
           </div>
 
-          {productData.images && productData.images.length > 0 && (
+          {productData?.images && productData?.images?.length > 0 && (
             <div className="grid grid-cols-4 gap-2">
-              {productData.images.map((image, index) => (
+              {productData?.images.map((image, index) => (
                 <img
                   key={index}
                   src={image}
@@ -117,25 +132,27 @@ function ProductDetailContent() {
 
         <div className="space-y-6">
           <div>
-            <Chip label={productData.category && <>{productData.category}</>} />
+            <Chip
+              label={productData?.category && <>{productData?.category}</>}
+            />
 
-            <h1 className="text-3xl font-bold">{productData.title}</h1>
+            <h1 className="text-3xl font-bold">{productData?.title}</h1>
             <div className="flex items-center gap-4 mt-2">
-              {productData.discountPercentage && (
+              {productData?.discountPercentage && (
                 <p className={`text-2xl font-semibold ${styles.orgPrice}`}>
-                  {productData.price.toFixed(2)}
+                  {productData?.price.toFixed(2)}
                 </p>
               )}
               <p className="text-2xl font-semibold">
                 $
-                {productData.discountPercentage
+                {productData?.discountPercentage
                   ? givenPrice.toFixed(2)
-                  : productData.price.toFixed(2)}
+                  : productData?.price.toFixed(2)}
               </p>
-              {productData.discountPercentage && (
+              {productData?.discountPercentage && (
                 <>
                   <Chip
-                    label={`${productData.discountPercentage} % OFF`}
+                    label={`${productData?.discountPercentage} % OFF`}
                     sx={{
                       backgroundColor: "#f50057",
                       color: "white",
@@ -149,34 +166,35 @@ function ProductDetailContent() {
             <div className="flex items-center gap-2 mt-2">
               <Rating
                 name="half-rating"
-                defaultValue={Math.floor(productData?.rating)}
+                value={productData?.rating ? Math.floor(productData.rating) : 0}
                 precision={0.5}
                 readOnly
               />
+
               <span className="text-sm text-gray-600">
                 {avgRating > 0 ? `(${avgRating} rating)` : "(No ratings yet)"}
               </span>
             </div>
 
-            <p className="text-gray-600 mt-2">{productData.description}</p>
+            <p className="text-gray-600 mt-2">{productData?.description}</p>
 
             <div className="space-y-4 bg-gray-50 p-4 rounded-lg mt-2">
-              {productData.sku && (
+              {productData?.sku && (
                 <div className="flex items-center gap-2">
                   <Inventory2OutlinedIcon className="h-5 w-5 text-gray-500" />
-                  <span>SKU: {productData.sku}</span>
+                  <span>SKU: {productData?.sku}</span>
                 </div>
               )}
-              {productData.shippingInformation && (
+              {productData?.shippingInformation && (
                 <div className="flex items-center gap-2">
                   <LocalShippingOutlinedIcon className="h-5 w-5 text-gray-500" />
-                  <span>{productData.shippingInformation}</span>
+                  <span>{productData?.shippingInformation}</span>
                 </div>
               )}
-              {productData.warrantyInformation && (
+              {productData?.warrantyInformation && (
                 <div className="flex items-center gap-2">
                   <ShieldOutlinedIcon className="h-5 w-5 text-gray-500" />
-                  <span>{productData.warrantyInformation}</span>
+                  <span>{productData?.warrantyInformation}</span>
                 </div>
               )}
             </div>
@@ -186,22 +204,22 @@ function ProductDetailContent() {
                 <span className="font-medium">Availability:</span>{" "}
                 <Chip
                   label={
-                    productData.availabilityStatus ||
-                    (productData.stock > 0 ? "In Stock" : "Out of Stock")
+                    productData?.availabilityStatus ||
+                    (productData?.stock > 0 ? "In Stock" : "Out of Stock")
                   }
                   sx={{ background: "black", color: "white" }}
                 />
               </div>
-              {productData.brand && (
+              {productData?.brand && (
                 <p className="text-sm">
                   <span className="font-medium">Brand:</span>{" "}
-                  {productData.brand}
+                  {productData?.brand}
                 </p>
               )}
-              {productData.returnPolicy && (
+              {productData?.returnPolicy && (
                 <p className="text-sm">
                   <span className="font-medium">Return Policy:</span>{" "}
-                  {productData.returnPolicy}
+                  {productData?.returnPolicy}
                 </p>
               )}
             </div>
@@ -210,7 +228,7 @@ function ProductDetailContent() {
           <div className={styles.quantityLayout}>
             <button
               onClick={() => {
-                itemQuantity < productData.stock &&
+                itemQuantity < productData?.stock &&
                   setItemQuantity(itemQuantity + 1);
               }}
             >
@@ -257,7 +275,7 @@ function ProductDetailContent() {
       <section>
         <h2 className="text-2xl font-semibold mb-6">Customer Reviews</h2>
         <div className="space-y-6">
-          {productData?.reviews.map((review, index) => (
+          {productData?.mockReviews.map((review, index) => (
             <Card key={index} className="p-6">
               <div className="flex items-center justify-between mb-2">
                 <div>
@@ -265,7 +283,9 @@ function ProductDetailContent() {
                   <div className="flex items-center gap-1 mt-1">
                     <Rating
                       name="half-rating"
-                      defaultValue={Math.floor(productData?.rating)}
+                      value={
+                        productData?.rating ? Math.floor(productData.rating) : 0
+                      }
                       precision={0.5}
                       readOnly
                     />
@@ -284,12 +304,4 @@ function ProductDetailContent() {
   );
 }
 
-// export default ProductDetail;
-
-export default function ProductDetail() {
-  return (
-    <Suspense fallback={<div>Loading Product Details...</div>}>
-      <ProductDetailContent />
-    </Suspense>
-  );
-}
+export default ProductDetail;
