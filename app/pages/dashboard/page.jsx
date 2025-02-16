@@ -1,11 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import MainLayout from "../page";
-import ProductLayout from "../../components/products/ProductLayout";
 import styles from "./dashboardStyle.module.scss";
 import CatagoryNav from "../../components/catagoryNav/CatagoryNav";
 import MuiProductLayout from "../../components/products/MuiProductLayout";
 import LoaderComp from "../../components/loadingPage/LoaderComp";
+import { useQuery } from "@tanstack/react-query";
+import Layout from "../page";
 
 function PageContent() {
   const [newSelectCategory, setNewSelectCategory] = useState("");
@@ -32,17 +32,34 @@ function PageContent() {
     fetchData();
   }, [newSelectCategory]);
 
-  // const { isPending, error, data } = useQuery({
-  //   queryFn: () =>
-  //     fetch("https://dummyjson.com/products").then((res) => res.json()),
+  // const fetchProducts = async () => {
+  //   const response = await fetch(
+  //     "https://e-combackend-jbal.onrender.com/getAllProducts",
+  //     {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   );
+
+  //   if (!response.ok) {
+  //     throw new Error("Failed to fetch products.");
+  //   }
+  //   return response.json();
+  // };
+
+  // const { data, isLoading, isError } = useQuery({
+  //   queryKey: ["products"],
+  //   queryFn: fetchProducts,
   // });
 
   // useEffect(() => {
-  //   console.log(isPending, error, data);
-  // }, [isPending, error, data]);
+  //   console.log("data, isLoading, isError", data, isLoading, isError);
+  // }, [data, isLoading, isError]);
 
   return (
-    <MainLayout>
+    <Layout>
       {loading ? (
         <LoaderComp />
       ) : (
@@ -55,10 +72,8 @@ function PageContent() {
           </div>
         </>
       )}
-    </MainLayout>
+    </Layout>
   );
 }
 
-export default function Page() {
-  return <PageContent />;
-}
+export default PageContent;

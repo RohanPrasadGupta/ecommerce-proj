@@ -1,12 +1,12 @@
 import React from "react";
-import MainLayout from "../page";
 import ProductDetail from "../../components/productDetail/ProductDetail";
+import Layout from "../page";
 
 function page() {
   return (
-    <MainLayout>
+    <Layout>
       <ProductDetail />
-    </MainLayout>
+    </Layout>
   );
 }
 

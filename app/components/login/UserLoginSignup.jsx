@@ -62,7 +62,7 @@ const UserLoginSignup = ({ setOpen, setUser }) => {
               </button>
             </div>
             {loginType === "signin" ? (
-              <LoginUser setUser={setUser} />
+              <LoginUser setOpen={setOpen} setUser={setUser} />
             ) : (
               <SignupUser setOpen={setOpen} />
             )}

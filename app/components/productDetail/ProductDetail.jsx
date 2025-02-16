@@ -284,12 +284,4 @@ function ProductDetailContent() {
   );
 }
 
-// export default ProductDetail;
-
-export default function ProductDetail() {
-  return (
-    <Suspense fallback={<div>Loading Product Details...</div>}>
-      <ProductDetailContent />
-    </Suspense>
-  );
-}
+export default ProductDetailContent;

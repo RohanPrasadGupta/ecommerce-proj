@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import styles from "./loginStyles.module.scss";
 import Cookies from "js-cookie";
 
-const LoginUser = ({ setUser }) => {
+const LoginUser = ({ setUser, setOpen }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -41,6 +41,7 @@ const LoginUser = ({ setUser }) => {
 
         // Update user state
         setUser(userDetails);
+        setOpen(false);
 
         toast.success("Login successful!");
         console.log("User Data:", data);

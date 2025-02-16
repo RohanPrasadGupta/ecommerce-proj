@@ -1,6 +1,5 @@
 import React from "react";
 import Modal from "@mui/material/Modal";
-import { Padding } from "@mui/icons-material";
 import Button from "@mui/material/Button";
 
 const style = {

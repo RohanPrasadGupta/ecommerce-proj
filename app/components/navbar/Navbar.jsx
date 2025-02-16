@@ -8,7 +8,6 @@ import companyLogo from "./logo.jpg";
 import Image from "next/image";
 import PersonTwoToneIcon from "@mui/icons-material/PersonTwoTone";
 import Modal from "@mui/material/Modal";
-import LoginUser from "../login/LoginUser";
 import UserLoginSignup from "../login/UserLoginSignup";
 import ProfilerContaier from "../login/ProfilerContaier";
 
