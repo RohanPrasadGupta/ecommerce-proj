@@ -26,12 +26,6 @@ function PageContent() {
     if (data?.data?.products) {
       setNewData(data.data.products);
     }
-    // console.log(
-    //   "isPending, error, data",
-    //   isPending,
-    //   error,
-    //   data?.data?.products
-    // );
   }, [isPending, error, data]);
 
   return (

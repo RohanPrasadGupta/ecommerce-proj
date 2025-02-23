@@ -33,11 +33,15 @@ const LoginUser = ({ setUser }) => {
         const { token, userDetails } = data.data;
 
         // Save to localStorage
-        localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(userDetails));
 
         // Save token in cookies
-        Cookies.set("token", token, { expires: 7, secure: true });
+        Cookies.set("cookie", token, {
+          expires: 7,
+          secure: true,
+          sameSite: "strict",
+        });
+        // expires in 7 days
 
         // Update user state
         setUser(userDetails);
@@ -58,6 +62,7 @@ const LoginUser = ({ setUser }) => {
   };
 
   const handleSubmit = (e) => {
+    console.log("Form Data:", formData);
     e.preventDefault();
     mutate();
   };

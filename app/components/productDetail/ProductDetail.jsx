@@ -19,7 +19,9 @@ import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import Divider from "@mui/material/Divider";
 import LoaderComp from "../loadingPage/LoaderComp";
 import Card from "@mui/material/Card";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 
 function ProductDetail() {
   const searchParams = useSearchParams();
@@ -37,6 +39,7 @@ function ProductDetail() {
   const avgRating = productData?.rating ? Number(productData.rating) : 0;
 
   const [user, setUser] = useState(null);
+  const cookieToken = Cookies.get("cookie") || null;
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -46,7 +49,8 @@ function ProductDetail() {
   }, []);
 
   useEffect(() => {
-    console.log("LoginUser:", user);
+    console.log("LoginUser data:", user);
+    console.log("LoginUser cookieToken:", cookieToken);
   }, [user]);
 
   const {
@@ -56,6 +60,7 @@ function ProductDetail() {
   } = useQuery({
     queryKey: ["getAllProducts"],
     queryFn: async () => {
+      console.log("Product ID:", productId);
       const response = await fetch(
         `https://e-combackend-jbal.onrender.com/product?id=${productId}`
       );
@@ -68,14 +73,52 @@ function ProductDetail() {
     if (newData?.data?.product) {
       setProductData(newData?.data?.product);
     }
-
-    console.log(
-      "isPending, error, data",
-      isPending,
-      error,
-      newData?.data?.product
-    );
   }, [isPending, error, newData]);
+
+  const handleAddToCartMutation = useMutation({
+    mutationFn: async () => {
+      // const token = localStorage.getItem("token"); // Ensure the user has a token
+
+      if (!cookieToken) {
+        toast.error("You need to log in first!");
+        throw new Error("User is not authenticated");
+      }
+
+      const addProductToCart = {
+        user: user?.id,
+        product: productId,
+        quantity: itemQuantity,
+      };
+
+      console.log("Adding to cart:", JSON.stringify(addProductToCart));
+      console.log("Adding to cart cookieToken:", cookieToken);
+
+      const response = await fetch(
+        "https://e-combackend-jbal.onrender.com/toCart",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${cookieToken}`, // Attach the token
+          },
+          body: JSON.stringify(addProductToCart),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error adding to cart!");
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast.success("Item Added to Cart");
+      console.log("Added cart data:", data);
+    },
+    onError: () => {
+      toast.error("Unable to add item to cart");
+      console.log(error.message);
+    },
+  });
 
   if (isPending) {
     return <LoaderComp />;
@@ -86,20 +129,41 @@ function ProductDetail() {
     (productData?.price * productData?.discountPercentage) / 100;
 
   const handleAddTOCart = () => {
-    try {
-      dispatch(
-        addItem({
-          ...productData,
-          price: productData.discount ? givenPrice : productData.price,
-          quantity: itemQuantity,
-          isAvaiable: true,
-        })
-      );
-      toast.success("Item added to cart");
-    } catch (error) {
-      toast.error("Unable to add item to cart");
+    if (!user || !user.id) {
+      toast.error("You need to log in first!");
+      return;
     }
+
+    if (!productData) {
+      toast.error("Product data is missing");
+      return;
+    }
+
+    handleAddToCartMutation.mutate();
   };
+
+  // const handleAddTOCart = () => {
+  //   if (!productData) {
+  //     toast.error("Product data is missing");
+  //     return;
+  //   }
+
+  //   handleAddToCartMutation();
+
+  //   // try {
+  //   //   dispatch(
+  //   //     addItem({
+  //   //       ...productData,
+  //   //       price: productData.discount ? givenPrice : productData.price,
+  //   //       quantity: itemQuantity,
+  //   //       isAvaiable: true,
+  //   //     })
+  //   //   );
+  //   //   toast.success("Item added to cart");
+  //   // } catch (error) {
+  //   //   toast.error("Unable to add item to cart");
+  //   // }
+  // };
 
   return (
     <div className={styles.pageLayout}>
