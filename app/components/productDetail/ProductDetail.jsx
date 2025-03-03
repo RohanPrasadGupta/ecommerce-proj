@@ -20,6 +20,7 @@ import Divider from "@mui/material/Divider";
 import LoaderComp from "../loadingPage/LoaderComp";
 import Card from "@mui/material/Card";
 import { useQuery } from "@tanstack/react-query";
+import { addProductToCart } from "../../services/queryFunctions";
 
 function ProductDetail() {
   const searchParams = useSearchParams();
@@ -85,20 +86,29 @@ function ProductDetail() {
     productData?.price -
     (productData?.price * productData?.discountPercentage) / 100;
 
+  // const handleAddTOCart = () => {
+  //   try {
+  //     dispatch(
+  //       addItem({
+  //         ...productData,
+  //         price: productData.discount ? givenPrice : productData.price,
+  //         quantity: itemQuantity,
+  //         isAvaiable: true,
+  //       })
+  //     );
+
+  //     toast.success("Item added to cart");
+  //   } catch (error) {
+  //     toast.error("Unable to add item to cart");
+  //   }
+  // };
   const handleAddTOCart = () => {
-    try {
-      dispatch(
-        addItem({
-          ...productData,
-          price: productData.discount ? givenPrice : productData.price,
-          quantity: itemQuantity,
-          isAvaiable: true,
-        })
-      );
-      toast.success("Item added to cart");
-    } catch (error) {
-      toast.error("Unable to add item to cart");
-    }
+    const toSendData = {
+      user: user.id,
+      product: productData._id,
+      quantity: itemQuantity,
+    };
+    addProductToCart(toSendData);
   };
 
   return (

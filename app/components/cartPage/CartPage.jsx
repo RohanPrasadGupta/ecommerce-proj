@@ -42,6 +42,8 @@ function CartPage() {
     enabled: !!user?.id, // Prevent running the query if `user?.id` is not available
   });
 
+  // console.log("cartItems fron Reduc", cartItems);
+
   const deleteMutation = useMutation({
     mutationFn: (item) =>
       axios.delete(
@@ -56,13 +58,11 @@ function CartPage() {
 
   const cartData = data?.data?.cart?.products || [];
 
-  useEffect(() => {
-    console.log("status, data,error", status, data, error);
-    // if (data && data.data) setCartData(data.data.cart.products);
-    // if (user === null) setCartData([]);
-    console.log("LoginUser:", user);
-    console.log("cartData:", cartData);
-  }, [status, data, user, cartData, error]);
+  // useEffect(() => {
+  //   console.log("status, data,error", status, data, error);
+  //   console.log("LoginUser:", user);
+  //   console.log("cartData:", cartData);
+  // }, [status, data, user, cartData, error]);
 
   const sippingCharge = 3;
 
