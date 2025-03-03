@@ -37,7 +37,7 @@ const LoginUser = ({ setUser }) => {
         localStorage.setItem("user", JSON.stringify(userDetails));
 
         // Save token in cookies
-        Cookies.set("token", token, { expires: 7, secure: true });
+        Cookies.set("cookie", token, { expires: 7, secure: true }); // expires in 7 days
 
         // Update user state
         setUser(userDetails);
