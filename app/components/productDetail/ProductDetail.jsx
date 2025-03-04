@@ -19,7 +19,7 @@ import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import Divider from "@mui/material/Divider";
 import LoaderComp from "../loadingPage/LoaderComp";
 import Card from "@mui/material/Card";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { addProductToCart } from "../../services/queryFunctions";
 
 function ProductDetail() {
@@ -65,17 +65,49 @@ function ProductDetail() {
     },
   });
 
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const toSendData = {
+        user: user.id,
+        product: productData._id,
+        quantity: itemQuantity,
+      };
+      const response = await fetch(
+        "https://e-combackend-jbal.onrender.com/toCart",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(toSendData),
+        }
+      );
+      console.log("Response from API:", response);
+      if (!response.ok) {
+        toast.error("Error logging in! Please try again.");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      toast.success("Item Added!");
+    },
+    onError: () => {
+      toast.error("Error adding item to cart");
+    },
+  });
+
   useEffect(() => {
     if (newData?.data?.product) {
       setProductData(newData?.data?.product);
     }
 
-    console.log(
-      "isPending, error, data",
-      isPending,
-      error,
-      newData?.data?.product
-    );
+    // console.log(
+    //   "isPending, error, data",
+    //   isPending,
+    //   error,
+    //   newData?.data?.product
+    // );
   }, [isPending, error, newData]);
 
   if (isPending) {
@@ -103,12 +135,21 @@ function ProductDetail() {
   //   }
   // };
   const handleAddTOCart = () => {
-    const toSendData = {
-      user: user.id,
-      product: productData._id,
-      quantity: itemQuantity,
-    };
-    addProductToCart(toSendData);
+    if (!user || !user.id) {
+      console.error("User is not logged in or user ID is missing");
+      return;
+    }
+
+    mutation.mutate();
+
+    // const toSendData = {
+    //   user: user.id,
+    //   product: productData._id,
+    //   quantity: itemQuantity,
+    // };
+
+    // // console.log("Sending data to API:", toSendData);
+    // addProductToCart(toSendData);
   };
 
   return (

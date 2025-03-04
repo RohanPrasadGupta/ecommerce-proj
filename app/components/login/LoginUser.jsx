@@ -12,6 +12,7 @@ const LoginUser = ({ setUser }) => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
+      console.log("Form Data:", formData);
       const response = await fetch(
         "https://e-combackend-jbal.onrender.com/user/signin",
         {
@@ -37,7 +38,7 @@ const LoginUser = ({ setUser }) => {
         localStorage.setItem("user", JSON.stringify(userDetails));
 
         // Save token in cookies
-        Cookies.set("cookie", token, { expires: 7, secure: true }); // expires in 7 days
+        Cookies.set("cookieTCart", token, { expires: 7, secure: true }); // expires in 7 days
 
         // Update user state
         setUser(userDetails);

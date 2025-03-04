@@ -18,25 +18,19 @@ export const userCartData = async (id) => {
 };
 
 export const addProductToCart = async (toSendData) => {
-  console.log("toSendData", toSendData);
-
   try {
-    const response = await axios.post(
-      `http://localhost:3001/toCart`,
-      {
-        user: toSendData.user,
-        product: toSendData.product,
-        quantity: toSendData.quantity,
-      },
-      {
-        withCredentials: true, // Ensure cookies are sent if required
-      }
-    );
+    console.log("Sending request with data:", toSendData);
+    // const url = "http://localhost:3001/toCart";
+    const url = "https://e-combackend-jbal.onrender.com/toCart";
+    const response = await axios.post(url, toSendData, {
+      withCredentials: true,
+      xsrfCookieName: "cookieTCart",
+    });
 
     console.log("Response from axios:", response);
     return response.data;
   } catch (error) {
-    console.error("Error adding product to cart:", error);
+    console.error("Full error:", error);
     throw new Error("Failed to add product to cart");
   }
 };
