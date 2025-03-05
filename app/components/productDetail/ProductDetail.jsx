@@ -19,22 +19,17 @@ import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import Divider from "@mui/material/Divider";
 import LoaderComp from "../loadingPage/LoaderComp";
 import Card from "@mui/material/Card";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { addProductToCart } from "../../services/queryFunctions";
+import axios from "axios";
 
 function ProductDetail() {
   const searchParams = useSearchParams();
-  const [productData, setProductData] = useState(null);
+  // const [productData, setProductData] = useState(null);
   const [itemQuantity, setItemQuantity] = useState(1);
   const dispatch = useDispatch();
   const productId = searchParams.get("id");
   const [selectedImage, setSelectedImage] = useState(null);
-
-  useEffect(() => {
-    if (productData) {
-      setSelectedImage(productData.thumbnail);
-    }
-  }, [productData]);
-  const avgRating = productData?.rating ? Number(productData.rating) : 0;
 
   const [user, setUser] = useState(null);
 
@@ -45,37 +40,66 @@ function ProductDetail() {
     }
   }, []);
 
-  useEffect(() => {
-    console.log("LoginUser:", user);
-  }, [user]);
+  // useEffect(() => {
+  //   console.log("LoginUser:", user);
+  // }, [user]);
 
   const {
+    data,
+    status,
+    error: prodError,
     isPending,
-    error,
-    data: newData,
   } = useQuery({
     queryKey: ["getAllProducts"],
     queryFn: async () => {
-      const response = await fetch(
-        `https://e-combackend-jbal.onrender.com/product?id=${productId}`
-      );
-      if (!response.ok) throw new Error("Failed to fetch products");
-      return response.json();
+      try {
+        const response = await axios.get(
+          `https://e-combackend-jbal.onrender.com/product?id=${productId}`,
+          { withCredentials: true }
+        );
+
+        return response?.data?.data?.product || [];
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+        throw new Error("Failed to fetch cart details");
+      }
     },
   });
 
+  const productData = data || null;
   useEffect(() => {
-    if (newData?.data?.product) {
-      setProductData(newData?.data?.product);
+    if (productData) {
+      setSelectedImage(productData.thumbnail);
     }
+  }, [productData]);
+  const avgRating = productData?.rating ? Number(productData.rating) : 0;
 
-    console.log(
-      "isPending, error, data",
-      isPending,
-      error,
-      newData?.data?.product
-    );
-  }, [isPending, error, newData]);
+  const addProductMutation = useMutation({
+    mutationFn: async () => {
+      try {
+        const toSendData = {
+          user: user?.id,
+          product: productData?._id,
+          quantity: itemQuantity,
+        };
+        const url = "https://e-combackend-jbal.onrender.com/toCart";
+
+        const response = await axios.post(url, toSendData, {
+          withCredentials: true,
+        });
+
+        return response;
+      } catch (error) {
+        toast.error("Failed to add item to cart");
+        throw error;
+      }
+    },
+
+    onSuccess: (response) => {
+      toast.success(response?.data?.status);
+    },
+    enabled: !!user?.id,
+  });
 
   if (isPending) {
     return <LoaderComp />;
@@ -86,20 +110,17 @@ function ProductDetail() {
     (productData?.price * productData?.discountPercentage) / 100;
 
   const handleAddTOCart = () => {
-    try {
-      dispatch(
-        addItem({
-          ...productData,
-          price: productData.discount ? givenPrice : productData.price,
-          quantity: itemQuantity,
-          isAvaiable: true,
-        })
-      );
-      toast.success("Item added to cart");
-    } catch (error) {
-      toast.error("Unable to add item to cart");
+    if (!user || !user.id) {
+      toast.error("Please login to add item to cart.");
+      return;
     }
+
+    addProductMutation.mutate();
   };
+
+  if (status === "error") {
+    return <div>Failed to fetch data</div>;
+  }
 
   return (
     <div className={styles.pageLayout}>

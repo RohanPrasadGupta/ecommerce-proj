@@ -12,6 +12,7 @@ const LoginUser = ({ setUser }) => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
+      console.log("Form Data:", formData);
       const response = await fetch(
         "https://e-combackend-jbal.onrender.com/user/signin",
         {
@@ -23,9 +24,6 @@ const LoginUser = ({ setUser }) => {
         }
       );
 
-      if (!response.ok) {
-        toast.error("Error logging in! Please try again.");
-      }
       return response.json();
     },
     onSuccess: (data) => {
@@ -37,13 +35,12 @@ const LoginUser = ({ setUser }) => {
         localStorage.setItem("user", JSON.stringify(userDetails));
 
         // Save token in cookies
-        Cookies.set("token", token, { expires: 7, secure: true });
+        Cookies.set("cookieTCart", token, { expires: 7, secure: true }); // expires in 7 days
 
         // Update user state
         setUser(userDetails);
-
         toast.success("Login successful!");
-        console.log("User Data:", data);
+        window.location.reload();
       } else {
         toast.error("Login failed! No token received.");
       }

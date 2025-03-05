@@ -19,6 +19,11 @@ import {
 import EmptyData from "../emptyPageData/EmptyData";
 import Button from "@mui/material/Button";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import { userCartData } from "../../services/queryFunctions";
+import axios from "axios";
+import { revalidatePath } from "next/cache";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 function CartPage() {
   const [isModelOpen, setIsModelOpen] = useState(false);
@@ -26,21 +31,56 @@ function CartPage() {
   const cartItems = useSelector((state) => state.cartItems.value);
   const itemSelected = useSelector((state) => state.cartSelectItems.value);
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
+
+  const user = JSON.parse(localStorage.getItem("user")) || null;
+  const userId = user?.id;
+
+  const { data, status, error } = useQuery({
+    queryKey: userId ? ["cartInfo", userId] : ["cartInfo"],
+    queryFn: async () => {
+      try {
+        const response = await axios.get(
+          `https://e-combackend-jbal.onrender.com/toCart?UserId=${user?.id}`,
+          { withCredentials: true }
+        );
+        return response?.data?.data?.cart?.products || [];
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+        throw new Error("Failed to fetch cart details");
+      }
+    },
+    enabled: !!userId,
+  });
+  const cartData = data || [];
+
+  const deleteMutation = useMutation({
+    mutationFn: (item) =>
+      axios.delete(
+        `https://e-combackend-jbal.onrender.com/toCart?UserId=${user.id}&productId=${item._id}`,
+        { withCredentials: true }
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cartInfo"] });
+      toast.success("Item deleted successfully");
+    },
+  });
+
+  // useEffect(() => {
+  //   console.log("status, data,error", status, data, error);
+  //   // console.log("LoginUser:", user);
+  //   console.log("cartData:", cartData);
+  // }, [status, data, user, cartData, error]);
 
   const sippingCharge = 3;
 
-  const TotalPrice = itemSelected
-    .reduce((total, item) => total + item.price, 0)
-    .toFixed(2);
+  const TotalPrice = Number(
+    itemSelected.reduce((total, item) => total + item.price, 0).toFixed(2)
+  );
 
-  const TotalCostPrice = Number(TotalPrice) + sippingCharge;
-  console.log("TotalCostPrice", TotalCostPrice);
+  const TotalCostPrice = TotalPrice + sippingCharge;
 
-  useEffect(() => {
-    console.log("cartItems", cartItems);
-  }, [cartItems]);
-
-  if (cartItems.length === 0) {
+  if (cartData && cartData.length === 0) {
     return <EmptyData windowHeight="90vh" text="Your cart is empty." />;
   }
 
@@ -55,8 +95,7 @@ function CartPage() {
   };
 
   const handeleDeleteItem = (item) => {
-    setIsModelOpen(true);
-    setDeleteItem(item);
+    deleteMutation.mutate(item);
   };
 
   const handleChange = (item, event) => {
@@ -100,12 +139,12 @@ function CartPage() {
               </tr>
             </thead>
             <tbody>
-              {cartItems.map((item) => (
+              {cartData.map((item) => (
                 <tr key={item._id} className="border-b">
                   <td>
                     <Checkbox
                       checked={itemSelected.some(
-                        (selectedItem) => selectedItem.id === item.id
+                        (selectedItem) => selectedItem.id === item._id
                       )}
                       onChange={(event) => handleChange(item, event)}
                       inputProps={{ "aria-label": "controlled" }}
@@ -113,27 +152,29 @@ function CartPage() {
                   </td>
                   <td className="flex items-center py-4">
                     <img
-                      src={item.thumbnail}
-                      alt={item.title}
+                      src={item?.product?.thumbnail}
+                      alt={item?.product?.title}
                       className="w-16 h-16 mr-4 rounded-md"
                     />
                     <div>
-                      <p>{item.title}</p>
+                      <p>{item.product.title}</p>
                       <div className="flex items-center gap-2">
-                        <p>{item.brand}</p>
+                        <p>{item.product.brand}</p>
                         <p
                           className={
-                            item.isAvaiable ? styles.inStock : styles.outOfStock
+                            item.product.isAvaiable
+                              ? styles.inStock
+                              : styles.outOfStock
                           }
                         >
-                          {item.isAvaiable
+                          {item.product.isAvaiable
                             ? `In Stock (${item.stock})`
                             : "Out of stock"}
                         </p>
                       </div>
                     </div>
                   </td>
-                  <td>${item.price.toFixed(2)}</td>
+                  <td>${item.product.price.toFixed(2)}</td>
                   <td className="flex items-center gap-2">
                     <button
                       disabled={item.quantity === 1}
@@ -151,7 +192,7 @@ function CartPage() {
                       disabled={item.quantity === item.stock}
                       onClick={() => handleIncrementCart(item)}
                       className={`px-2 py-1 ${
-                        item.quantity === item.stock
+                        item.quantity === item.product.stock
                           ? "bg-gray-400"
                           : "bg-gray-200"
                       }   rounded`}
@@ -160,7 +201,7 @@ function CartPage() {
                     </button>
                   </td>
                   <td className="font-semibold">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    ${(item.product.price * item.quantity).toFixed(2)}
                   </td>
                   <td>
                     <button
@@ -223,7 +264,7 @@ function CartPage() {
               <div className="border-t my-4"></div>
               <p className="font-semibold">Total: ${TotalCostPrice}</p>
               <button className="bg-blue-600 text-white w-full py-3 mt-4 rounded">
-                Checkout
+                <LocalShippingIcon /> Checkout
               </button>
             </>
           )}
