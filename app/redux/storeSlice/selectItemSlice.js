@@ -11,7 +11,9 @@ export const selectSlice = createSlice({
     },
 
     removeCheckItem: (state, action) => {
-      state.value = state.value.filter((item) => item.id !== action.payload.id);
+      state.value = state.value.filter(
+        (item) => item._id !== action.payload._id
+      );
     },
   },
 });

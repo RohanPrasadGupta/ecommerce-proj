@@ -11,6 +11,7 @@ import Modal from "@mui/material/Modal";
 import LoginUser from "../login/LoginUser";
 import UserLoginSignup from "../login/UserLoginSignup";
 import ProfilerContaier from "../login/ProfilerContaier";
+import Cookies from "js-cookie";
 
 const style = {
   position: "absolute",
@@ -33,7 +34,9 @@ function Navbar({ user, setUser }) {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    Cookies.remove("cookieTCart");
     setUser(null);
+    window.location.reload();
   };
 
   return (
