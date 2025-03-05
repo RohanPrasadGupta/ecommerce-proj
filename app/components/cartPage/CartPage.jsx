@@ -31,36 +31,44 @@ function CartPage() {
   const cartItems = useSelector((state) => state.cartItems.value);
   const itemSelected = useSelector((state) => state.cartSelectItems.value);
   const dispatch = useDispatch();
-  // const [cartData, setCartData] = useState([]);
   const queryClient = useQueryClient();
 
   const user = JSON.parse(localStorage.getItem("user")) || null;
+  const userId = user?.id;
 
   const { data, status, error } = useQuery({
-    queryKey: user?.id ? ["cartInfo", user.id] : ["cartInfo"],
-    queryFn: () => userCartData(user?.id),
-    enabled: !!user?.id, // Prevent running the query if `user?.id` is not available
+    queryKey: userId ? ["cartInfo", userId] : ["cartInfo"],
+    queryFn: async () => {
+      try {
+        const response = await axios.get(
+          `https://e-combackend-jbal.onrender.com/toCart?UserId=${user?.id}`,
+          { withCredentials: true }
+        );
+        return response?.data?.data?.cart?.products || [];
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+        throw new Error("Failed to fetch cart details");
+      }
+    },
+    enabled: !!userId,
   });
-
-  // console.log("cartItems fron Reduc", cartItems);
+  const cartData = data || [];
 
   const deleteMutation = useMutation({
     mutationFn: (item) =>
       axios.delete(
-        `http://localhost:3001/toCart?UserId=${user.id}&productId=${item._id}`,
+        `https://e-combackend-jbal.onrender.com/toCart?UserId=${user.id}&productId=${item._id}`,
         { withCredentials: true }
       ),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cartInfo", user.id] });
+      queryClient.invalidateQueries({ queryKey: ["cartInfo"] });
       toast.success("Item deleted successfully");
     },
   });
 
-  const cartData = data?.data?.cart?.products || [];
-
   // useEffect(() => {
   //   console.log("status, data,error", status, data, error);
-  //   console.log("LoginUser:", user);
+  //   // console.log("LoginUser:", user);
   //   console.log("cartData:", cartData);
   // }, [status, data, user, cartData, error]);
 
@@ -72,7 +80,7 @@ function CartPage() {
 
   const TotalCostPrice = TotalPrice + sippingCharge;
 
-  if (cartData.length === 0) {
+  if (cartData && cartData.length === 0) {
     return <EmptyData windowHeight="90vh" text="Your cart is empty." />;
   }
 
@@ -89,19 +97,6 @@ function CartPage() {
   const handeleDeleteItem = (item) => {
     deleteMutation.mutate(item);
   };
-
-  // const handeleDeleteItem = (item) => {
-  //   axios
-  //     .delete(
-  //       `http://localhost:3001/toCart?UserId=${user.id}&productId=${item._id}`
-  //     )
-  //     .then((response) => {
-  //       console.log("response", response);
-  //       queryClient.invalidateQueries({ queryKey: ["cartInfo", user.id] });
-  //     });
-  //   // setIsModelOpen(true);
-  //   // setDeleteItem(item);
-  // };
 
   const handleChange = (item, event) => {
     if (event.target.checked) {
@@ -157,8 +152,8 @@ function CartPage() {
                   </td>
                   <td className="flex items-center py-4">
                     <img
-                      src={item.product.thumbnail}
-                      alt={item.product.title}
+                      src={item?.product?.thumbnail}
+                      alt={item?.product?.title}
                       className="w-16 h-16 mr-4 rounded-md"
                     />
                     <div>

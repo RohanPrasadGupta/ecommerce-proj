@@ -21,21 +21,15 @@ import LoaderComp from "../loadingPage/LoaderComp";
 import Card from "@mui/material/Card";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { addProductToCart } from "../../services/queryFunctions";
+import axios from "axios";
 
 function ProductDetail() {
   const searchParams = useSearchParams();
-  const [productData, setProductData] = useState(null);
+  // const [productData, setProductData] = useState(null);
   const [itemQuantity, setItemQuantity] = useState(1);
   const dispatch = useDispatch();
   const productId = searchParams.get("id");
   const [selectedImage, setSelectedImage] = useState(null);
-
-  useEffect(() => {
-    if (productData) {
-      setSelectedImage(productData.thumbnail);
-    }
-  }, [productData]);
-  const avgRating = productData?.rating ? Number(productData.rating) : 0;
 
   const [user, setUser] = useState(null);
 
@@ -46,69 +40,66 @@ function ProductDetail() {
     }
   }, []);
 
-  useEffect(() => {
-    console.log("LoginUser:", user);
-  }, [user]);
+  // useEffect(() => {
+  //   console.log("LoginUser:", user);
+  // }, [user]);
 
   const {
+    data,
+    status,
+    error: prodError,
     isPending,
-    error,
-    data: newData,
   } = useQuery({
     queryKey: ["getAllProducts"],
     queryFn: async () => {
-      const response = await fetch(
-        `https://e-combackend-jbal.onrender.com/product?id=${productId}`
-      );
-      if (!response.ok) throw new Error("Failed to fetch products");
-      return response.json();
-    },
-  });
+      try {
+        const response = await axios.get(
+          `https://e-combackend-jbal.onrender.com/product?id=${productId}`,
+          { withCredentials: true }
+        );
 
-  const mutation = useMutation({
-    mutationFn: async () => {
-      const toSendData = {
-        user: user.id,
-        product: productData._id,
-        quantity: itemQuantity,
-      };
-      const response = await fetch(
-        "https://e-combackend-jbal.onrender.com/toCart",
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(toSendData),
-        }
-      );
-      console.log("Response from API:", response);
-      if (!response.ok) {
-        toast.error("Error logging in! Please try again.");
+        return response?.data?.data?.product || [];
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+        throw new Error("Failed to fetch cart details");
       }
-      return response.json();
-    },
-    onSuccess: () => {
-      toast.success("Item Added!");
-    },
-    onError: () => {
-      toast.error("Error adding item to cart");
     },
   });
 
+  const productData = data || null;
   useEffect(() => {
-    if (newData?.data?.product) {
-      setProductData(newData?.data?.product);
+    if (productData) {
+      setSelectedImage(productData.thumbnail);
     }
+  }, [productData]);
+  const avgRating = productData?.rating ? Number(productData.rating) : 0;
 
-    // console.log(
-    //   "isPending, error, data",
-    //   isPending,
-    //   error,
-    //   newData?.data?.product
-    // );
-  }, [isPending, error, newData]);
+  const addProductMutation = useMutation({
+    mutationFn: async () => {
+      try {
+        const toSendData = {
+          user: user?.id,
+          product: productData?._id,
+          quantity: itemQuantity,
+        };
+        const url = "https://e-combackend-jbal.onrender.com/toCart";
+
+        const response = await axios.post(url, toSendData, {
+          withCredentials: true,
+        });
+
+        return response;
+      } catch (error) {
+        toast.error("Failed to add item to cart");
+        throw error;
+      }
+    },
+
+    onSuccess: (response) => {
+      toast.success(response?.data?.status);
+    },
+    enabled: !!user?.id,
+  });
 
   if (isPending) {
     return <LoaderComp />;
@@ -118,39 +109,18 @@ function ProductDetail() {
     productData?.price -
     (productData?.price * productData?.discountPercentage) / 100;
 
-  // const handleAddTOCart = () => {
-  //   try {
-  //     dispatch(
-  //       addItem({
-  //         ...productData,
-  //         price: productData.discount ? givenPrice : productData.price,
-  //         quantity: itemQuantity,
-  //         isAvaiable: true,
-  //       })
-  //     );
-
-  //     toast.success("Item added to cart");
-  //   } catch (error) {
-  //     toast.error("Unable to add item to cart");
-  //   }
-  // };
   const handleAddTOCart = () => {
     if (!user || !user.id) {
-      console.error("User is not logged in or user ID is missing");
+      toast.error("Please login to add item to cart.");
       return;
     }
 
-    mutation.mutate();
-
-    // const toSendData = {
-    //   user: user.id,
-    //   product: productData._id,
-    //   quantity: itemQuantity,
-    // };
-
-    // // console.log("Sending data to API:", toSendData);
-    // addProductToCart(toSendData);
+    addProductMutation.mutate();
   };
+
+  if (status === "error") {
+    return <div>Failed to fetch data</div>;
+  }
 
   return (
     <div className={styles.pageLayout}>

@@ -36,6 +36,7 @@ function Navbar({ user, setUser }) {
     localStorage.removeItem("user");
     Cookies.remove("cookieTCart");
     setUser(null);
+    window.location.reload();
   };
 
   return (

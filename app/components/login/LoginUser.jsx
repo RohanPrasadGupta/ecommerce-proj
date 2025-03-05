@@ -24,9 +24,6 @@ const LoginUser = ({ setUser }) => {
         }
       );
 
-      if (!response.ok) {
-        toast.error("Error logging in! Please try again.");
-      }
       return response.json();
     },
     onSuccess: (data) => {
@@ -42,9 +39,8 @@ const LoginUser = ({ setUser }) => {
 
         // Update user state
         setUser(userDetails);
-
         toast.success("Login successful!");
-        console.log("User Data:", data);
+        window.location.reload();
       } else {
         toast.error("Login failed! No token received.");
       }

@@ -8,9 +8,9 @@ export const userCartData = async (id) => {
         withCredentials: true,
       }
     );
-    console.log("response from axios", response);
+    console.log("response from axios for get all cart item", response);
 
-    return response.data; // axios stores response data in `data`
+    return response?.data?.data;
   } catch (error) {
     console.error("Error fetching cart data:", error);
     throw new Error("Failed to fetch cart details");
