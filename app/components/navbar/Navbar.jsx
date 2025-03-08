@@ -25,9 +25,15 @@ const style = {
   alignItems: "center",
   justifyContent: "center",
 };
-function Navbar({ user, setUser }) {
+function Navbar() {
   const router = useRouter();
+  const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) setUser(JSON.parse(storedUser));
+  }, []);
 
   const handleOpen = () => setOpen(true);
 
@@ -35,7 +41,6 @@ function Navbar({ user, setUser }) {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     Cookies.remove("cookieTCart");
-    setUser(null);
     window.location.reload();
   };
 
