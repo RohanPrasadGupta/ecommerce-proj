@@ -24,7 +24,19 @@ const style = {
   alignItems: "center",
   justifyContent: "center",
 };
-function Navbar({ user, setUser }) {
+function Navbar() {
+  const [user, setUser] = useState(null); // Replace `any` with a proper type
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Error parsing user from localStorage", error);
+      }
+    }
+  }, []);
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
