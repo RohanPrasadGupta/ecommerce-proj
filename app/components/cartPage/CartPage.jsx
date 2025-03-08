@@ -26,6 +26,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 function CartPage() {
+  const [user, setUser] = useState(null);
   const [isModelOpen, setIsModelOpen] = useState(false);
   const [deleteItem, setDeleteItem] = useState(null);
   const cartItems = useSelector((state) => state.cartItems.value);
@@ -33,7 +34,11 @@ function CartPage() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
 
-  const user = JSON.parse(localStorage.getItem("user")) || null;
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) setUser(JSON.parse(storedUser));
+  }, []);
+
   const userId = user?.id;
 
   const { data, status, error } = useQuery({

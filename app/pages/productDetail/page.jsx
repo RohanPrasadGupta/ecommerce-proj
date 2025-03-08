@@ -1,12 +1,13 @@
 import React from "react";
-import MainLayout from "../page";
 import ProductDetail from "../../components/productDetail/ProductDetail";
+import LoaderComp from "../../components/loadingPage/LoaderComp";
+import { Suspense } from "react";
 
 function page() {
   return (
-    <MainLayout>
+    <Suspense fallback={<LoaderComp />}>
       <ProductDetail />
-    </MainLayout>
+    </Suspense>
   );
 }
 
