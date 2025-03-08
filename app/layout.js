@@ -1,7 +1,12 @@
+"use client";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import QueryProvider from "./components/QueryProvider";
+import store from "./redux/store/store";
+import { Provider } from "react-redux";
+import Navbar from "./components/navbar/Navbar";
+import React from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,10 +18,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
-  title: "YOUR STORE",
-  description: "Created by RPG",
-};
+// export const metadata = {
+//   title: "YOUR STORE",
+//   description: "Created by RPG",
+// };
 
 export default function RootLayout({ children }) {
   return (
@@ -24,7 +29,12 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <QueryProvider>{children}</QueryProvider>
+        <Provider store={store}>
+          <QueryProvider>
+            <Navbar />
+            {children}
+          </QueryProvider>
+        </Provider>
         <Toaster
           position="right-top"
           gutter={12}
