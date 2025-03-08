@@ -72,7 +72,12 @@ function ProductDetail() {
       setSelectedImage(productData.thumbnail);
     }
   }, [productData]);
+
   const avgRating = productData?.rating ? Number(productData.rating) : 0;
+
+  const givenPrice =
+    productData?.price -
+    (productData?.price * productData?.discountPercentage) / 100;
 
   const addProductMutation = useMutation({
     mutationFn: async () => {
@@ -104,10 +109,6 @@ function ProductDetail() {
   if (isPending) {
     return <LoaderComp />;
   }
-
-  const givenPrice =
-    productData?.price -
-    (productData?.price * productData?.discountPercentage) / 100;
 
   const handleAddTOCart = () => {
     if (!user || !user.id) {
@@ -167,8 +168,8 @@ function ProductDetail() {
               <p className="text-2xl font-semibold">
                 $
                 {productData?.discountPercentage
-                  ? givenPrice.toFixed(2)
-                  : productData?.price.toFixed(2)}
+                  ? givenPrice?.toFixed(2)
+                  : productData?.price?.toFixed(2)}
               </p>
               {productData?.discountPercentage && (
                 <>
@@ -296,7 +297,7 @@ function ProductDetail() {
       <section>
         <h2 className="text-2xl font-semibold mb-6">Customer Reviews</h2>
         <div className="space-y-6">
-          {productData?.mockReviews.map((review, index) => (
+          {productData?.mockReviews?.map((review, index) => (
             <Card key={index} className="p-6">
               <div className="flex items-center justify-between mb-2">
                 <div>

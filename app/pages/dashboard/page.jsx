@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import MainLayout from "../page";
 import ProductLayout from "../../components/products/ProductLayout";
 import styles from "./dashboardStyle.module.scss";
 import CatagoryNav from "../../components/catagoryNav/CatagoryNav";
@@ -35,7 +34,7 @@ function PageContent() {
   }, [isPending, error, data]);
 
   return (
-    <MainLayout>
+    <>
       {isPending ? (
         <LoaderComp />
       ) : (
@@ -48,7 +47,7 @@ function PageContent() {
           </div>
         </>
       )}
-    </MainLayout>
+    </>
   );
 }
 
