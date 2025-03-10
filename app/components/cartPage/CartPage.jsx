@@ -24,6 +24,7 @@ import axios from "axios";
 import { revalidatePath } from "next/cache";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import GlobalButton from "../Buttons/GlobalButton";
 
 function CartPage() {
   const [user, setUser] = useState(null);
@@ -71,10 +72,9 @@ function CartPage() {
     },
   });
 
-  useEffect(() => {
-    console.log("itemSelected:", itemSelected);
-    console.log("cartData:", cartData);
-  }, [itemSelected, cartData]);
+  // useEffect(() => {
+  //   console.log("itemSelected:", itemSelected);
+  // }, [itemSelected]);
 
   const sippingCharge = 3;
 
@@ -108,11 +108,41 @@ function CartPage() {
         addCheckItem({
           _id: item._id,
           price: Number((item.product.price * item.quantity).toFixed(2)),
+          quantity: item.quantity,
         })
       );
     } else {
       dispatch(removeCheckItem({ _id: item._id }));
     }
+  };
+
+  const handleCheckOut = () => {
+    if (user === null) {
+      toast.error("Please login first");
+    }
+
+    if (itemSelected.length === 0) {
+      toast.error("Please select at least one item to checkout.");
+    }
+
+    if (itemSelected.length > 0) {
+      itemSelected.forEach((item) => {
+        const data = {
+          user: user.id,
+          orderItems: {
+            product: item._id,
+            quantity: item.quantity,
+            orderedPrice: item.price,
+          },
+        };
+        console.log(data);
+      });
+    }
+
+    // axios
+    //   .post("https://e-combackend-jbal.onrender.com/order", data, {
+    //     withCredentials: true,
+    //   })
   };
 
   return (
@@ -274,9 +304,15 @@ function CartPage() {
               <button className="text-blue-600 mt-2">Change Address</button>
               <div className="border-t my-4"></div>
               <p className="font-semibold">Total: ${TotalCostPrice}</p>
-              <button className="bg-blue-600 text-white w-full py-3 mt-4 rounded">
-                <LocalShippingIcon /> Checkout
-              </button>
+              <GlobalButton
+                text="Checkout"
+                icomon={<LocalShippingIcon />}
+                fontSize="20px"
+                hoverEffect={true}
+                onClick={() => {
+                  handleCheckOut();
+                }}
+              />
             </>
           )}
         </div>
