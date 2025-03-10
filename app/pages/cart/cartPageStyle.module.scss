@@ -1,0 +1,35 @@
+.cartTabContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  height: 54px;
+  gap: 5px;
+  padding: 0px 20px;
+}
+
+.btnCart {
+  width: 100px;
+  font-size: 15px;
+  padding: 2px 15px;
+  cursor: pointer;
+  &:hover {
+    background-color: #dcdcdc;
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15),
+      0px 2px 4px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.active {
+  padding: 2px 15px;
+  font-size: 15px;
+  font-weight: bold;
+  color: white;
+  background-color: #db2cff;
+  width: 100px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+}

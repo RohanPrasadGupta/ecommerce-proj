@@ -12,6 +12,7 @@ import LoginUser from "../login/LoginUser";
 import UserLoginSignup from "../login/UserLoginSignup";
 import ProfilerContaier from "../login/ProfilerContaier";
 import Cookies from "js-cookie";
+import GlobalButton from "../Buttons/GlobalButton";
 
 const style = {
   position: "absolute",
@@ -75,24 +76,27 @@ function Navbar() {
         </Link>
       </div>
       <div className={styles["navbar-nav-items"]}>
-        <div className={styles.cartButtonDiv}>
-          <button
-            onClick={() => router.push("/pages/cart")}
-            className={styles.cartButton}
-          >
-            <MdShoppingCart />
-            <p>Cart</p>
-          </button>
-        </div>
+        <GlobalButton
+          type="button"
+          text="Cart"
+          onClick={() => router.push("/pages/cart")}
+          icon={<MdShoppingCart />}
+          width="100px"
+          height="32px"
+          hoverEffect={true}
+        />
         {user !== null ? (
           <ProfilerContaier handleLogout={handleLogout} />
         ) : (
-          <div className={styles.cartButtonDiv}>
-            <button onClick={handleOpen} className={styles.cartButton}>
-              <PersonTwoToneIcon />
-              <p>Login</p>
-            </button>
-          </div>
+          <GlobalButton
+            type="button"
+            text="Login"
+            onClick={handleOpen}
+            icon={<PersonTwoToneIcon />}
+            width="100px"
+            height="32px"
+            hoverEffect={true}
+          />
         )}
       </div>
     </nav>
