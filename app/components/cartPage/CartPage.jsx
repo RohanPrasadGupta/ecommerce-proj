@@ -71,11 +71,10 @@ function CartPage() {
     },
   });
 
-  // useEffect(() => {
-  //   console.log("status, data,error", status, data, error);
-  //   // console.log("LoginUser:", user);
-  //   console.log("cartData:", cartData);
-  // }, [status, data, user, cartData, error]);
+  useEffect(() => {
+    console.log("itemSelected:", itemSelected);
+    console.log("cartData:", cartData);
+  }, [itemSelected, cartData]);
 
   const sippingCharge = 3;
 
@@ -106,10 +105,13 @@ function CartPage() {
   const handleChange = (item, event) => {
     if (event.target.checked) {
       dispatch(
-        addCheckItem({ id: item.id, price: item.price * item.quantity })
+        addCheckItem({
+          _id: item._id,
+          price: Number((item.product.price * item.quantity).toFixed(2)),
+        })
       );
     } else {
-      dispatch(removeCheckItem({ id: item.id }));
+      dispatch(removeCheckItem({ _id: item._id }));
     }
   };
 
@@ -120,7 +122,8 @@ function CartPage() {
           title="Product"
           isModelOpen={isModelOpen}
           deleteFunction={() => {
-            dispatch(removeItem(deleteItem));
+            handeleDeleteItem(deleteItem);
+            // dispatch(removeItem(deleteItem));
             setIsModelOpen(false);
           }}
           closeModal={() => {
@@ -149,7 +152,7 @@ function CartPage() {
                   <td>
                     <Checkbox
                       checked={itemSelected.some(
-                        (selectedItem) => selectedItem.id === item._id
+                        (selectedItem) => selectedItem._id === item._id
                       )}
                       onChange={(event) => handleChange(item, event)}
                       inputProps={{ "aria-label": "controlled" }}
@@ -167,13 +170,13 @@ function CartPage() {
                         <p>{item.product.brand}</p>
                         <p
                           className={
-                            item.product.isAvaiable
+                            item.product.availabilityStatus === "In Stock"
                               ? styles.inStock
                               : styles.outOfStock
                           }
                         >
-                          {item.product.isAvaiable
-                            ? `In Stock (${item.stock})`
+                          {item.product.availabilityStatus === "In Stock"
+                            ? `In Stock (${item.product.stock})`
                             : "Out of stock"}
                         </p>
                       </div>
@@ -211,7 +214,10 @@ function CartPage() {
                   <td>
                     <button
                       type="button"
-                      onClick={() => handeleDeleteItem(item)}
+                      onClick={() => {
+                        setIsModelOpen(true);
+                        setDeleteItem(item);
+                      }}
                       className="text-red-500"
                     >
                       <DeleteOutlineOutlinedIcon
