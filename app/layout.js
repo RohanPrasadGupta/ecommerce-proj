@@ -27,6 +27,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
+        style={{ paddingTop: "60px" }}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Provider store={store}>

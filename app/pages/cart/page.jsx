@@ -37,7 +37,7 @@ function page() {
           </button>
         ))}
       </div>
-      <div>
+      <div className={styles.cartMainContainer}>
         {activeTab === "Cart" && <CartPage />}
         {activeTab === "Ongoin" && <OnGoingOrder />}
         {activeTab === "Confirm" && <ConfirmOrderPage />}

@@ -54,7 +54,7 @@ function Navbar() {
           </div>
         </Modal>
       )}
-      <div className="navbar-brand">
+      <div className={`${styles.navbarLogo} navbar-brand`}>
         <Link
           style={{
             display: "flex",
