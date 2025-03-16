@@ -4,18 +4,25 @@ import CartPage from "../../components/cartPage/CartPage";
 import ConfirmOrderPage from "../../components/cartPage/ConfirmOrderPage";
 import OnGoingOrder from "../../components/cartPage/OnGoingOrder";
 import styles from "./cartPageStyle.module.scss";
+import EmptyData from "../../components/emptyPageData/EmptyData";
 
 function page() {
+  const [user, setUser] = useState(null);
   const tabs = ["Cart", "Ongoin", "Confirm"];
   const [activeTab, setActiveTab] = useState("Cart");
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) setUser(JSON.parse(storedUser));
+  }, []);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 
-  useEffect(() => {
-    console.log("activeTab", activeTab);
-  }, [activeTab]);
+  if (user === null) {
+    return <EmptyData text="Please login first." />;
+  }
 
   return (
     <>

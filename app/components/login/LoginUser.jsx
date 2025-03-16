@@ -12,7 +12,7 @@ const LoginUser = ({ setUser }) => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      console.log("Form Data:", formData);
+      // console.log("Form Data:", formData);
       const response = await fetch(
         "https://e-combackend-jbal.onrender.com/user/signin",
         {
