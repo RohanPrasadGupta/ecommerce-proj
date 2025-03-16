@@ -63,7 +63,7 @@ export default function OnGoingOrder() {
             </Box>
           ))
         ) : (
-          <EmptyData windowHeight="auto" text="No data found." />
+          <EmptyData windowHeight="50vh" text="No data found." />
         )}
       </Box>
     </div>
