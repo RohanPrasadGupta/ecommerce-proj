@@ -25,11 +25,16 @@ import { revalidatePath } from "next/cache";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import GlobalButton from "../Buttons/GlobalButton";
+import LoaderComp from "../loadingPage/LoaderComp";
+import { Box } from "@mui/material";
 
 function CartPage() {
   const [user, setUser] = useState(null);
   const [isModelOpen, setIsModelOpen] = useState(false);
   const [deleteItem, setDeleteItem] = useState(null);
+  const [address, setAddress] = useState("");
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const cartItems = useSelector((state) => state.cartItems.value);
   const itemSelected = useSelector((state) => state.cartSelectItems.value);
   const dispatch = useDispatch();
@@ -37,7 +42,11 @@ function CartPage() {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      setName(parsedUser.name);
+    }
   }, []);
 
   const userId = user?.id;
@@ -47,9 +56,10 @@ function CartPage() {
     queryFn: async () => {
       try {
         const response = await axios.get(
-          `https://e-combackend-jbal.onrender.com/toCart?UserId=${user?.id}`,
+          `https://e-combackend-jbal.onrender.com/toCart?UserId=${userId}`,
           { withCredentials: true }
         );
+        // console.log("API Response:", response.data);
         return response?.data?.data?.cart?.products || [];
       } catch (error) {
         console.error("Error fetching cart data:", error);
@@ -58,7 +68,7 @@ function CartPage() {
     },
     enabled: !!userId,
   });
-  const cartData = data || [];
+  const cartData = Array.isArray(data) ? data : [];
 
   const deleteMutation = useMutation({
     mutationFn: (item) =>
@@ -72,9 +82,26 @@ function CartPage() {
     },
   });
 
-  // useEffect(() => {
-  //   console.log("itemSelected:", itemSelected);
-  // }, [itemSelected]);
+  const addOrderMutation = useMutation({
+    mutationFn: async (orderData) => {
+      const response = await axios.post(
+        "https://e-combackend-jbal.onrender.com/order",
+        orderData,
+        { withCredentials: true }
+      );
+      // console.log("API Response:", response);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cartInfo"] });
+      toast.success("Order placed successfully");
+      checkFunction(orderData);
+    },
+    onError: (error) => {
+      toast.error("Order failed! Please try again.");
+      console.error("Error placing order:", error);
+    },
+  });
 
   const sippingCharge = 3;
 
@@ -106,44 +133,74 @@ function CartPage() {
     if (event.target.checked) {
       dispatch(
         addCheckItem({
-          _id: item._id,
+          _id: item.product._id,
           price: Number((item.product.price * item.quantity).toFixed(2)),
           quantity: item.quantity,
         })
       );
     } else {
-      dispatch(removeCheckItem({ _id: item._id }));
+      dispatch(removeCheckItem({ _id: item.product._id }));
     }
   };
 
   const handleCheckOut = () => {
     if (user === null) {
       toast.error("Please login first");
+      return;
     }
 
     if (itemSelected.length === 0) {
       toast.error("Please select at least one item to checkout.");
+      return;
     }
+
+    if (address === "") {
+      toast.error("Please enter your address.");
+      return;
+    }
+
+    if (name === "") {
+      toast.error("Please enter your name.");
+      return;
+    }
+
+    if (phoneNumber === "" || phoneNumber.length !== 10) {
+      toast.error("Please enter your phone number.");
+      return;
+    }
+
+    const orderProdArray = [];
+
+    console.log(itemSelected);
 
     if (itemSelected.length > 0) {
       itemSelected.forEach((item) => {
         const data = {
-          user: user.id,
-          orderItems: {
-            product: item._id,
-            quantity: item.quantity,
-            orderedPrice: item.price,
-          },
+          product: item._id,
+          quantity: item.quantity,
+          orderedPrice: item.price,
         };
-        console.log(data);
+
+        orderProdArray.push(data);
       });
     }
+
+    const sendOrder = {
+      user: userId,
+      orderItems: orderProdArray,
+    };
+    console.log(sendOrder);
+
+    addOrderMutation.mutate(sendOrder);
 
     // axios
     //   .post("https://e-combackend-jbal.onrender.com/order", data, {
     //     withCredentials: true,
     //   })
   };
+
+  if (status === "loading") return <LoaderComp />;
+  if (status === "error") return <p>Error fetching cart data</p>;
 
   return (
     <>
@@ -163,9 +220,9 @@ function CartPage() {
         />
       )}
 
-      <div className="flex flex-col md:flex-row bg-gray-100 p-6">
+      <div className="flex flex-col lg:flex-row bg-gray-100 p-6">
         {/* Cart Items */}
-        <div className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-md">
+        <div className="w-full lg:w-2/3 bg-white p-6 rounded-lg shadow-md">
           <table className="w-full">
             <thead>
               <tr className="border-b">
@@ -182,7 +239,7 @@ function CartPage() {
                   <td>
                     <Checkbox
                       checked={itemSelected.some(
-                        (selectedItem) => selectedItem._id === item._id
+                        (selectedItem) => selectedItem._id === item.product._id
                       )}
                       onChange={(event) => handleChange(item, event)}
                       inputProps={{ "aria-label": "controlled" }}
@@ -213,7 +270,7 @@ function CartPage() {
                     </div>
                   </td>
                   <td>${item.product.price.toFixed(2)}</td>
-                  <td className="flex items-center gap-2">
+                  <td className="flex items-center gap-2 ">
                     <button
                       disabled={item.quantity === 1}
                       type="button"
@@ -270,8 +327,7 @@ function CartPage() {
           </table>
         </div>
 
-        {/* Summary Section */}
-        <div className="w-full md:w-1/3 bg-gray-200 p-6 rounded-lg shadow-md mt-6 md:mt-0 md:ml-6">
+        <div className="w-full lg:w-1/3 bg-white p-6 rounded-lg shadow-lg mt-6 lg:mt-0 lg:ml-6">
           {itemSelected.length === 0 ? (
             <div className="h-96 flex items-center justify-center">
               <EmptyData
@@ -282,36 +338,88 @@ function CartPage() {
             </div>
           ) : (
             <>
-              <h2 className="font-semibold text-lg">Discount / Promo Code</h2>
+              <h2 className="font-semibold text-lg text-gray-700 mb-2">
+                Discount / Promo Code
+              </h2>
               <div className="flex mt-3">
                 <input
                   type="text"
                   placeholder="Promo Code Here"
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <button className="bg-blue-600 text-white px-4 py-2 ml-2 rounded">
+                <button className="bg-blue-600 text-white px-4 py-2 ml-2 rounded-md hover:bg-blue-700 transition">
                   Apply
                 </button>
               </div>
-              <div className="border-t my-4"></div>
-              <p>Subtotal: ${TotalPrice}</p>
-              <div className="mt-3">
-                <p>Subtotal: ${sippingCharge}</p>
-              </div>
-              <p className="mt-4">
-                Address: Kyla Olsen Ap #651-8679 Tamuning PA 10855
+
+              <div className="border-t my-4 border-gray-300"></div>
+
+              {/* Pricing Details */}
+              <p className="text-gray-600">
+                <span className="font-semibold">Subtotal:</span> ${TotalPrice}
               </p>
-              <button className="text-blue-600 mt-2">Change Address</button>
-              <div className="border-t my-4"></div>
-              <p className="font-semibold">Total: ${TotalCostPrice}</p>
+              <p className="text-gray-600 mt-2">
+                <span className="font-semibold">Shipping Charge:</span> $
+                {sippingCharge}
+              </p>
+
+              {/* Address Section */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "5px",
+                  marginTop: "10px",
+                }}
+              >
+                <p>Address:</p>
+                <input
+                  type="text"
+                  placeholder="Please enter your address."
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => setAddress(e.target.value)}
+                  value={address}
+                />
+                <Box sx={{ display: "flex", gap: "10px" }}>
+                  <Box>
+                    <p>Name:</p>
+                    <input
+                      type="text"
+                      placeholder="Please enter your name."
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      onChange={(e) => setAddress(e.target.value)}
+                      value={name}
+                    />
+                  </Box>
+                  <Box>
+                    <p>Phone:</p>
+                    <input
+                      type="number"
+                      placeholder="Phone Number 98XX.."
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      value={phoneNumber}
+                    />
+                  </Box>
+                </Box>
+              </Box>
+              <button className="text-blue-600 mt-2 hover:underline">
+                Change Address
+              </button>
+
+              <div className="border-t my-4 border-gray-300"></div>
+
+              <p className="text-xl font-semibold text-gray-800">
+                Total: ${TotalCostPrice}
+              </p>
+
               <GlobalButton
                 text="Checkout"
                 icomon={<LocalShippingIcon />}
                 fontSize="20px"
                 hoverEffect={true}
-                onClick={() => {
-                  handleCheckOut();
-                }}
+                onClick={handleCheckOut}
+                className="w-full mt-4"
               />
             </>
           )}

@@ -20,10 +20,6 @@ function page() {
     setActiveTab(tab);
   };
 
-  useEffect(() => {
-    console.log("activeTab", activeTab);
-  }, [activeTab]);
-
   if (user === null) {
     return <EmptyData text="Please login first." />;
   }
