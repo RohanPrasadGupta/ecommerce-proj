@@ -95,7 +95,6 @@ function CartPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cartInfo"] });
       toast.success("Order placed successfully");
-      checkFunction(orderData);
     },
     onError: (error) => {
       toast.error("Order failed! Please try again.");
