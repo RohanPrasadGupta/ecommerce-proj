@@ -37,17 +37,11 @@ export default function OnGoingOrder() {
   });
   const onGoingCartData = data && data.data ? data.data.orders : [];
 
-  const sortedOrders = Array.isArray(onGoingCartData)
-    ? [...onGoingCartData].sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      )
-    : [];
-
   return (
     <div className="flex flex-col md:flex-row bg-gray-100 p-6 ">
       <Box sx={{ width: "100%" }}>
-        {sortedOrders.length > 0 ? (
-          sortedOrders.map((item, index) => (
+        {onGoingCartData.length > 0 ? (
+          onGoingCartData.map((item, index) => (
             <Box
               sx={{
                 marginBottom: "20px",

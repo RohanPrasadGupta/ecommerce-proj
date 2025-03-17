@@ -2,33 +2,90 @@ import { Box } from "@mui/system";
 import React from "react";
 import GlobalButton from "../Buttons/GlobalButton";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const CartOrderItemUI = ({ data }) => {
+  const queryClient = useQueryClient();
+
   const productItems = data?.products;
+  const formatDate = (isoDate) => {
+    const date = new Date(isoDate);
+    return date.toLocaleString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  const cancelMutation = useMutation({
+    mutationFn: (item) =>
+      axios.delete(`http://localhost:3001/order?orderId=${data._id}`, {
+        withCredentials: true,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ongoingOrderInfo"] });
+      toast.success("Order cancelled successfully");
+    },
+    onError: (error) => {
+      toast.error("Order cancellation failed! Please try again.");
+      console.error("Error cancelling order:", error);
+    },
+  });
+
+  const handleCancelOrder = async (data) => {
+    cancelMutation.mutate();
+  };
 
   return (
     <Box sx={{ display: "flex", gap: "10px", flexDirection: "column" }}>
       <Box
         sx={{
           display: "flex",
+          flexDirection: "row",
+          gap: "10px",
           justifyContent: "space-between",
-          alignItems: "center",
-          background: "white",
-          padding: "5px 20px",
-          borderRadius: "24px",
-          width: "max-content",
-          fontSize: "14px",
-          fontWeight: "bold",
         }}
       >
-        Date: {data?.date}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            background: "white",
+            padding: "5px 20px",
+            borderRadius: "24px",
+            width: "max-content",
+            fontSize: "14px",
+            fontWeight: "bold",
+          }}
+        >
+          Date: {data?.date ? formatDate(data.date) : "N/A"}
+        </Box>
+        {!data.isCanceled && (
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <GlobalButton
+              type="button"
+              onClick={() => handleCancelOrder(data)}
+              text="Cancel Order"
+              theme="outline"
+              width="fit-content"
+              height="40px"
+              icon={<CloseOutlinedIcon fontSize="small" />}
+            />
+          </Box>
+        )}
       </Box>
       <Box>
         {productItems?.map((product, index) => (
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: "80px 1fr 120px 80px 80px 100px 150px",
+              gridTemplateColumns: "80px 1fr 150px 100px 100px 150px ",
               alignItems: "center",
               gap: "10px",
               width: "100%",
@@ -125,19 +182,6 @@ const CartOrderItemUI = ({ data }) => {
             >
               ${product?.orderedPrice}
             </Box>
-
-            {product?.status === "pending" && (
-              <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <GlobalButton
-                  type="button"
-                  text="Cancel"
-                  theme="outline"
-                  width="fit-content"
-                  height="40px"
-                  icon={<CloseOutlinedIcon fontSize="small" />}
-                />
-              </Box>
-            )}
           </Box>
         ))}
       </Box>
