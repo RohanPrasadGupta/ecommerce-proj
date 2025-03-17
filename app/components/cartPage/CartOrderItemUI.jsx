@@ -24,7 +24,7 @@ const CartOrderItemUI = ({ data }) => {
 
   const cancelMutation = useMutation({
     mutationFn: (item) =>
-      axios.delete(`http://localhost:3001/order?orderId=${data._id}`, {
+      axios.delete(`https://e-combackend-jbal.onrender.com/order?orderId=${data._id}`, {
         withCredentials: true,
       }),
     onSuccess: () => {
