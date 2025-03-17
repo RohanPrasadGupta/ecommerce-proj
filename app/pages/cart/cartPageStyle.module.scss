@@ -5,6 +5,9 @@
   height: 54px;
   gap: 5px;
   padding: 0px 20px;
+  position: fixed;
+  background-color: white;
+  width: 100%;
 }
 
 .btnCart {
@@ -32,4 +35,8 @@
   gap: 5px;
   justify-content: center;
   align-items: center;
+}
+
+.cartMainContainer {
+  margin-top: 60px;
 }

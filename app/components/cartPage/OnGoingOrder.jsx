@@ -19,7 +19,7 @@ export default function OnGoingOrder() {
   const userId = user?.id;
 
   const { data, status, error } = useQuery({
-    queryKey: userId ? ["cartInfo", userId] : ["cartInfo"],
+    queryKey: userId ? ["ongoingOrderInfo", userId] : ["ongoingOrderInfo"],
     queryFn: async () => {
       try {
         const response = await axios.get(
@@ -37,17 +37,11 @@ export default function OnGoingOrder() {
   });
   const onGoingCartData = data && data.data ? data.data.orders : [];
 
-  const sortedOrders = Array.isArray(onGoingCartData)
-    ? [...onGoingCartData].sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      )
-    : [];
-
   return (
     <div className="flex flex-col md:flex-row bg-gray-100 p-6 ">
       <Box sx={{ width: "100%" }}>
-        {sortedOrders.length > 0 ? (
-          sortedOrders.map((item, index) => (
+        {onGoingCartData.length > 0 ? (
+          onGoingCartData.map((item, index) => (
             <Box
               sx={{
                 marginBottom: "20px",
@@ -63,7 +57,7 @@ export default function OnGoingOrder() {
             </Box>
           ))
         ) : (
-          <EmptyData windowHeight="auto" text="No data found." />
+          <EmptyData windowHeight="50vh" text="No data found." />
         )}
       </Box>
     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./cardPageStyle.module.scss";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -94,11 +94,29 @@ function CartPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cartInfo"] });
+      queryClient.invalidateQueries({ queryKey: ["ongoingOrderInfo"] });
       toast.success("Order placed successfully");
     },
     onError: (error) => {
       toast.error("Order failed! Please try again.");
       console.error("Error placing order:", error);
+    },
+  });
+
+  const updateQuantityMutation = useMutation({
+    mutationFn: async ({ productIndexId, quantity }) => {
+      await axios.post("https://e-combackend-jbal.onrender.com/updateCart", {
+        productIndexId,
+        userID: user?.id,
+        quantity,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cartInfo"] });
+      toast.success("Cart updated successfully!");
+    },
+    onError: () => {
+      toast.error("Failed to update cart quantity.");
     },
   });
 
@@ -115,13 +133,21 @@ function CartPage() {
   }
 
   const handleIncrementCart = (item) => {
-    if (item.quantity < item.stock) {
-      dispatch(incrementItem(item));
+    if (item.quantity < item.product.stock) {
+      updateQuantityMutation.mutate({
+        productIndexId: item._id,
+        quantity: item.quantity + 1,
+      });
     }
   };
 
   const handleDecrementCart = (item) => {
-    dispatch(decrementItem(item));
+    if (item.quantity > 1) {
+      updateQuantityMutation.mutate({
+        productIndexId: item._id,
+        quantity: item.quantity - 1,
+      });
+    }
   };
 
   const handeleDeleteItem = (item) => {
@@ -135,6 +161,7 @@ function CartPage() {
           _id: item.product._id,
           price: Number((item.product.price * item.quantity).toFixed(2)),
           quantity: item.quantity,
+          ProdCartId: item._id,
         })
       );
     } else {
@@ -170,14 +197,13 @@ function CartPage() {
 
     const orderProdArray = [];
 
-    console.log(itemSelected);
-
     if (itemSelected.length > 0) {
       itemSelected.forEach((item) => {
         const data = {
           product: item._id,
           quantity: item.quantity,
           orderedPrice: item.price,
+          ProdCartId: item.ProdCartId,
         };
 
         orderProdArray.push(data);
@@ -187,15 +213,14 @@ function CartPage() {
     const sendOrder = {
       user: userId,
       orderItems: orderProdArray,
+      address: address,
+      name: name,
+      phoneNumber: phoneNumber,
     };
-    console.log(sendOrder);
+
+    // console.log("sendOrder", sendOrder);
 
     addOrderMutation.mutate(sendOrder);
-
-    // axios
-    //   .post("https://e-combackend-jbal.onrender.com/order", data, {
-    //     withCredentials: true,
-    //   })
   };
 
   if (status === "loading") return <LoaderComp />;
@@ -234,7 +259,7 @@ function CartPage() {
             </thead>
             <tbody>
               {cartData.map((item) => (
-                <tr key={item._id} className="border-b">
+                <tr key={item._id} className="border-b ">
                   <td>
                     <Checkbox
                       checked={itemSelected.some(
@@ -269,30 +294,32 @@ function CartPage() {
                     </div>
                   </td>
                   <td>${item.product.price.toFixed(2)}</td>
-                  <td className="flex items-center gap-2 ">
-                    <button
-                      disabled={item.quantity === 1}
-                      type="button"
-                      onClick={() => handleDecrementCart(item)}
-                      className={`px-2 py-1 ${
-                        item.quantity === 1 ? "bg-gray-400" : "bg-gray-200"
-                      }  rounded`}
-                    >
-                      -
-                    </button>
-                    <span>{item.quantity}</span>
-                    <button
-                      type="button"
-                      disabled={item.quantity === item.stock}
-                      onClick={() => handleIncrementCart(item)}
-                      className={`px-2 py-1 ${
-                        item.quantity === item.product.stock
-                          ? "bg-gray-400"
-                          : "bg-gray-200"
-                      }   rounded`}
-                    >
-                      +
-                    </button>
+                  <td className=" gap-2  ">
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <button
+                        disabled={item.quantity === 1}
+                        type="button"
+                        onClick={() => handleDecrementCart(item)}
+                        className={`px-2 py-1 ${
+                          item.quantity === 1 ? "bg-gray-400" : "bg-gray-200"
+                        }  rounded`}
+                      >
+                        -
+                      </button>
+                      <span>{item.quantity}</span>
+                      <button
+                        type="button"
+                        disabled={item.quantity === item.stock}
+                        onClick={() => handleIncrementCart(item)}
+                        className={`px-2 py-1 ${
+                          item.quantity === item.product.stock
+                            ? "bg-gray-400"
+                            : "bg-gray-200"
+                        }   rounded`}
+                      >
+                        +
+                      </button>
+                    </Box>
                   </td>
                   <td className="font-semibold">
                     ${(item.product.price * item.quantity).toFixed(2)}
@@ -402,9 +429,6 @@ function CartPage() {
                   </Box>
                 </Box>
               </Box>
-              <button className="text-blue-600 mt-2 hover:underline">
-                Change Address
-              </button>
 
               <div className="border-t my-4 border-gray-300"></div>
 
