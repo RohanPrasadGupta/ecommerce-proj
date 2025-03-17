@@ -94,6 +94,7 @@ function CartPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cartInfo"] });
+      queryClient.invalidateQueries({ queryKey: ["ongoingOrderInfo"] });
       toast.success("Order placed successfully");
     },
     onError: (error) => {
@@ -160,6 +161,7 @@ function CartPage() {
           _id: item.product._id,
           price: Number((item.product.price * item.quantity).toFixed(2)),
           quantity: item.quantity,
+          ProdCartId: item._id,
         })
       );
     } else {
@@ -201,6 +203,7 @@ function CartPage() {
           product: item._id,
           quantity: item.quantity,
           orderedPrice: item.price,
+          ProdCartId: item.ProdCartId,
         };
 
         orderProdArray.push(data);
@@ -210,7 +213,12 @@ function CartPage() {
     const sendOrder = {
       user: userId,
       orderItems: orderProdArray,
+      address: address,
+      name: name,
+      phoneNumber: phoneNumber,
     };
+
+    // console.log("sendOrder", sendOrder);
 
     addOrderMutation.mutate(sendOrder);
   };

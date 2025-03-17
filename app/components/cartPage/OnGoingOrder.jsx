@@ -19,7 +19,7 @@ export default function OnGoingOrder() {
   const userId = user?.id;
 
   const { data, status, error } = useQuery({
-    queryKey: userId ? ["cartInfo", userId] : ["cartInfo"],
+    queryKey: userId ? ["ongoingOrderInfo", userId] : ["ongoingOrderInfo"],
     queryFn: async () => {
       try {
         const response = await axios.get(
