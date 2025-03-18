@@ -15,10 +15,14 @@ export const selectSlice = createSlice({
         (item) => item._id !== action.payload._id
       );
     },
+    resetCheckItems: (state) => {
+      state.value = [];
+    },
   },
 });
 
 // Action funtion exports
-export const { addCheckItem, removeCheckItem } = selectSlice.actions;
+export const { addCheckItem, removeCheckItem, resetCheckItems } =
+  selectSlice.actions;
 
 export default selectSlice.reducer;

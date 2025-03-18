@@ -15,6 +15,7 @@ import Checkbox from "@mui/material/Checkbox";
 import {
   addCheckItem,
   removeCheckItem,
+  resetCheckItems,
 } from "../../redux/storeSlice/selectItemSlice";
 import EmptyData from "../emptyPageData/EmptyData";
 import Button from "@mui/material/Button";
@@ -95,6 +96,7 @@ function CartPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cartInfo"] });
       queryClient.invalidateQueries({ queryKey: ["ongoingOrderInfo"] });
+      // dispatch(resetCheckItems());
       toast.success("Order placed successfully");
     },
     onError: (error) => {
@@ -221,6 +223,9 @@ function CartPage() {
     // console.log("sendOrder", sendOrder);
 
     addOrderMutation.mutate(sendOrder);
+    itemSelected.forEach((item) => {
+      dispatch(removeCheckItem({ _id: item._id }));
+    });
   };
 
   if (status === "loading") return <LoaderComp />;
