@@ -1,42 +1,88 @@
 .cartTabContainer {
   display: flex;
   flex-direction: row;
-  justify-content: left;
-  height: 54px;
-  gap: 5px;
-  padding: 0px 20px;
+  justify-content: flex-start;
+  align-items: center;
+  height: 64px;
+  gap: 12px;
+  padding: 0 24px;
   position: fixed;
   background-color: white;
   width: 100%;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  z-index: 100;
+
+  @media (max-width: 768px) {
+    height: 56px;
+    padding: 0 16px;
+    gap: 8px;
+  }
 }
 
 .btnCart {
-  width: 100px;
+  width: 120px;
   font-size: 15px;
-  padding: 2px 15px;
+  padding: 8px 16px;
   cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background-color: white;
+  color: #4b5563;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+
   &:hover {
-    background-color: #dcdcdc;
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15),
-      0px 2px 4px rgba(0, 0, 0, 0.12);
+    background-color: #f9fafb;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 768px) {
+    width: 33.33%;
+    padding: 8px 4px;
+    font-size: 14px;
   }
 }
 
 .active {
-  padding: 2px 15px;
+  width: 120px;
+  padding: 8px 16px;
   font-size: 15px;
-  font-weight: bold;
+  font-weight: 600;
   color: white;
-  background-color: #db2cff;
-  width: 100px;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  border-radius: 8px;
+  border: none;
   cursor: pointer;
   display: flex;
-  flex-direction: row;
-  gap: 5px;
+  gap: 6px;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25);
+  }
+
+  @media (max-width: 768px) {
+    width: 33.33%;
+    padding: 8px 4px;
+    font-size: 14px;
+  }
 }
 
 .cartMainContainer {
-  margin-top: 60px;
+  margin-top: 80px;
+  padding: 0 16px;
+
+  @media (max-width: 768px) {
+    margin-top: 70px;
+    padding: 0 8px;
+  }
 }

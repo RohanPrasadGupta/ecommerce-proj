@@ -95,7 +95,6 @@ const CartOrderItemUI = ({ data }) => {
         )}
       </Box>
 
-      {/* Product Items Section with Header */}
       <Box>
         <Box
           sx={{
@@ -148,7 +147,6 @@ const CartOrderItemUI = ({ data }) => {
             }}
             key={index}
           >
-            {/* Item column - Keep centered */}
             <Box
               sx={{
                 display: "flex",
@@ -171,7 +169,6 @@ const CartOrderItemUI = ({ data }) => {
               />
             </Box>
 
-            {/* Product column - Keep left aligned */}
             <Box
               sx={{
                 display: "flex",
@@ -202,7 +199,6 @@ const CartOrderItemUI = ({ data }) => {
               </span>
             </Box>
 
-            {/* Status column */}
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Box
                 sx={{
@@ -211,11 +207,9 @@ const CartOrderItemUI = ({ data }) => {
                   alignItems: "center",
                   fontSize: "13px",
                   backgroundImage: (() => {
-                    // Get status - checking multiple possible locations for the status value
                     const status =
                       product?.status || product?.product?.status || "unknown";
 
-                    // Choose color based on status (case insensitive comparison)
                     switch (status.toLowerCase()) {
                       case "pending":
                         return "linear-gradient(135deg, #ffa500, #ff8c00)";
@@ -224,7 +218,7 @@ const CartOrderItemUI = ({ data }) => {
                       case "delivered":
                         return "linear-gradient(135deg, #08a908, #078e07)";
                       case "cancelled":
-                      case "canceled": // Handle both spellings
+                      case "canceled":
                         return "linear-gradient(135deg, #f44336, #d32f2f)";
                       default:
                         return "linear-gradient(135deg, #9e9e9e, #757575)";
@@ -240,12 +234,10 @@ const CartOrderItemUI = ({ data }) => {
                   boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.15)",
                 }}
               >
-                {/* Show status with fallback */}
                 {product?.status || product?.product?.status || "Unknown"}
               </Box>
             </Box>
 
-            {/* Price column */}
             <Box
               sx={{
                 fontSize: "15px",
@@ -259,7 +251,6 @@ const CartOrderItemUI = ({ data }) => {
               ${product?.product?.price}
             </Box>
 
-            {/* Quantity column */}
             <Box
               sx={{
                 fontSize: "15px",
@@ -273,7 +264,6 @@ const CartOrderItemUI = ({ data }) => {
               {product?.quantity}
             </Box>
 
-            {/* Total column */}
             <Box
               sx={{
                 fontSize: "15px",
@@ -290,7 +280,6 @@ const CartOrderItemUI = ({ data }) => {
         ))}
       </Box>
 
-      {/* Footer Section */}
       <Box
         sx={{
           display: "flex",

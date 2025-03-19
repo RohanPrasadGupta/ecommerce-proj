@@ -5,10 +5,29 @@ import ConfirmOrderPage from "../../components/cartPage/ConfirmOrderPage";
 import OnGoingOrder from "../../components/cartPage/OnGoingOrder";
 import styles from "./cartPageStyle.module.scss";
 import EmptyData from "../../components/emptyPageData/EmptyData";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 
 function page() {
   const [user, setUser] = useState(null);
-  const tabs = ["Cart", "Ongoin", "Confirm"];
+  const tabs = [
+    {
+      id: "Cart",
+      label: "Cart",
+      icon: <ShoppingCartOutlinedIcon fontSize="small" />,
+    },
+    {
+      id: "Ongoing",
+      label: "Ongoing",
+      icon: <LocalShippingOutlinedIcon fontSize="small" />,
+    },
+    {
+      id: "Confirm",
+      label: "Completed",
+      icon: <CheckCircleOutlineOutlinedIcon fontSize="small" />,
+    },
+  ];
   const [activeTab, setActiveTab] = useState("Cart");
 
   useEffect(() => {
@@ -29,17 +48,18 @@ function page() {
       <div className={styles.cartTabContainer}>
         {tabs.map((tab) => (
           <button
-            key={tab}
-            onClick={() => handleTabChange(tab)}
-            className={activeTab === tab ? styles.active : styles.btnCart}
+            key={tab.id}
+            onClick={() => handleTabChange(tab.id)}
+            className={activeTab === tab.id ? styles.active : styles.btnCart}
           >
-            {tab}
+            {tab.icon}
+            {tab.label}
           </button>
         ))}
       </div>
       <div className={styles.cartMainContainer}>
         {activeTab === "Cart" && <CartPage />}
-        {activeTab === "Ongoin" && <OnGoingOrder />}
+        {activeTab === "Ongoing" && <OnGoingOrder />}
         {activeTab === "Confirm" && <ConfirmOrderPage />}
       </div>
     </>

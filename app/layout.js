@@ -6,6 +6,7 @@ import QueryProvider from "./components/QueryProvider";
 import store from "./redux/store/store";
 import { Provider } from "react-redux";
 import Navbar from "./components/navbar/Navbar";
+import Footer from "./components/footer/Footer";
 import React from "react";
 
 const geistSans = Geist({
@@ -18,22 +19,24 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// export const metadata = {
-//   title: "YOUR STORE",
-//   description: "Created by RPG",
-// };
-
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" style={{ height: "100%" }}>
       <body
-        style={{ paddingTop: "60px" }}
+        style={{
+          paddingTop: "60px",
+          margin: 0,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+        }}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Provider store={store}>
           <QueryProvider>
             <Navbar />
-            {children}
+            <div style={{ flex: "1 0 auto" }}>{children}</div>
+            <Footer />
           </QueryProvider>
         </Provider>
         <Toaster
