@@ -24,9 +24,12 @@ const CartOrderItemUI = ({ data }) => {
 
   const cancelMutation = useMutation({
     mutationFn: (item) =>
-      axios.delete(`https://e-combackend-jbal.onrender.com/order?orderId=${data._id}`, {
-        withCredentials: true,
-      }),
+      axios.delete(
+        `https://e-combackend-jbal.onrender.com/order?orderId=${data._id}`,
+        {
+          withCredentials: true,
+        }
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ongoingOrderInfo"] });
       toast.success("Order cancelled successfully");
@@ -37,18 +40,26 @@ const CartOrderItemUI = ({ data }) => {
     },
   });
 
+  const itemsAmount = data?.products
+    ?.map((product) => product?.orderedPrice)
+    .reduce((a, b) => a + b, 0)
+    .toFixed(2);
+
   const handleCancelOrder = async (data) => {
     cancelMutation.mutate();
   };
 
   return (
-    <Box sx={{ display: "flex", gap: "10px", flexDirection: "column" }}>
+    <Box sx={{ display: "flex", gap: "16px", flexDirection: "column" }}>
       <Box
         sx={{
           display: "flex",
           flexDirection: "row",
-          gap: "10px",
+          gap: "16px",
           justifyContent: "space-between",
+          alignItems: "center",
+          borderBottom: "1px solid #eaecf0",
+          paddingBottom: "12px",
         }}
       >
         <Box
@@ -56,15 +67,18 @@ const CartOrderItemUI = ({ data }) => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            background: "white",
-            padding: "5px 20px",
-            borderRadius: "24px",
+            background: "rgba(249, 250, 251, 0.8)",
+            padding: "8px 16px",
+            borderRadius: "12px",
             width: "max-content",
             fontSize: "14px",
-            fontWeight: "bold",
+            fontWeight: "600",
+            color: "#4B5563",
+            boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.05)",
           }}
         >
-          Date: {data?.date ? formatDate(data.date) : "N/A"}
+          <span style={{ marginRight: "6px", opacity: 0.7 }}>Ordered:</span>
+          {data?.date ? formatDate(data.date) : "N/A"}
         </Box>
         {!data.isCanceled && (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -80,38 +94,84 @@ const CartOrderItemUI = ({ data }) => {
           </Box>
         )}
       </Box>
+
+      {/* Product Items Section with Header */}
       <Box>
+        <Box
+          sx={{
+            marginBottom: "8px",
+            display: "grid",
+            gridTemplateColumns: "1fr 2fr 1fr 1fr 1fr 1fr",
+            paddingLeft: "20px",
+            paddingRight: "20px",
+            fontSize: "13px",
+            fontWeight: "600",
+            color: "#6B7280",
+            "@media (max-width: 768px)": {
+              display: "none",
+            },
+          }}
+        >
+          <Box sx={{ textAlign: "center" }}>Item</Box>
+          <Box>Product</Box>
+          <Box sx={{ textAlign: "center" }}>Status</Box>
+          <Box sx={{ textAlign: "center" }}>Price</Box>
+          <Box sx={{ textAlign: "center" }}>Qty</Box>
+          <Box sx={{ textAlign: "center" }}>Total</Box>
+        </Box>
+
         {productItems?.map((product, index) => (
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: "80px 1fr 150px 100px 100px 150px ",
+              gridTemplateColumns: "1fr 2fr 1fr 1fr 1fr 1fr",
               alignItems: "center",
-              gap: "10px",
+              gap: "16px",
               width: "100%",
               background: "white",
-              padding: "10px 20px",
-              borderRadius: "24px",
-              marginBottom: "5px",
+              padding: "16px 20px",
+              borderRadius: "16px",
+              marginBottom: "8px",
+              transition: "transform 0.2s ease",
+              "&:hover": {
+                boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                transform: "translateY(-2px)",
+              },
               "@media (max-width: 768px)": {
                 gridTemplateColumns: "1fr",
-                gap: "5px",
+                gap: "10px",
                 textAlign: "center",
-                padding: "10px",
+                padding: "16px",
                 alignItems: "center",
                 justifyContent: "center",
               },
             }}
             key={index}
           >
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
+            {/* Item column - Keep centered */}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "10px",
+                overflow: "hidden",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+              }}
+            >
               <img
                 src={product?.product?.thumbnail}
                 alt={product?.product?.title}
-                className="w-16 h-16 rounded-md"
+                style={{
+                  width: "64px",
+                  height: "64px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                }}
               />
             </Box>
 
+            {/* Product column - Keep left aligned */}
             <Box
               sx={{
                 display: "flex",
@@ -119,71 +179,276 @@ const CartOrderItemUI = ({ data }) => {
                 minWidth: "150px",
               }}
             >
-              <span style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>
+              <span
+                style={{
+                  fontWeight: "600",
+                  fontSize: "15px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  marginBottom: "4px",
+                }}
+              >
                 {product?.product?.title}
               </span>
-              <span style={{ fontSize: "14px", color: "#666" }}>
+              <span
+                style={{
+                  fontSize: "13px",
+                  color: "#6B7280",
+                  fontWeight: "500",
+                }}
+              >
                 {product?.product?.brand}
               </span>
             </Box>
 
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontSize: "14px",
-                backgroundColor:
-                  product?.status === "pending" ? "#ffa500" : "#08a908",
-                color: "white",
-                padding: "5px 10px",
-                borderRadius: "12px",
-                minWidth: "100px",
-                width: "max-content",
-                "@media (max-width: 768px)": {
-                  width: "100%",
+            {/* Status column */}
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <Box
+                sx={{
                   display: "flex",
                   justifyContent: "center",
-                },
-              }}
-            >
-              {product?.status === "pending" ? "Pending" : "Delivered"}
+                  alignItems: "center",
+                  fontSize: "13px",
+                  backgroundImage: (() => {
+                    // Get status - checking multiple possible locations for the status value
+                    const status =
+                      product?.status || product?.product?.status || "unknown";
+
+                    // Choose color based on status (case insensitive comparison)
+                    switch (status.toLowerCase()) {
+                      case "pending":
+                        return "linear-gradient(135deg, #ffa500, #ff8c00)";
+                      case "dispatched":
+                        return "linear-gradient(135deg, #2196f3, #1976d2)";
+                      case "delivered":
+                        return "linear-gradient(135deg, #08a908, #078e07)";
+                      case "cancelled":
+                      case "canceled": // Handle both spellings
+                        return "linear-gradient(135deg, #f44336, #d32f2f)";
+                      default:
+                        return "linear-gradient(135deg, #9e9e9e, #757575)";
+                    }
+                  })(),
+                  color: "white",
+                  padding: "6px 12px",
+                  borderRadius: "20px",
+                  minWidth: "100px",
+                  width: "max-content",
+                  fontWeight: "600",
+                  textTransform: "capitalize",
+                  boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.15)",
+                }}
+              >
+                {/* Show status with fallback */}
+                {product?.status || product?.product?.status || "Unknown"}
+              </Box>
             </Box>
 
+            {/* Price column */}
             <Box
               sx={{
-                fontSize: "16px",
-                fontWeight: "bold",
+                fontSize: "15px",
+                fontWeight: "600",
+                color: "#374151",
                 textAlign: "center",
-                minWidth: "80px",
+                display: "flex",
+                justifyContent: "center",
               }}
             >
               ${product?.product?.price}
             </Box>
 
+            {/* Quantity column */}
             <Box
               sx={{
-                fontSize: "16px",
-                fontWeight: "bold",
+                fontSize: "15px",
+                fontWeight: "600",
+                color: "#374151",
                 textAlign: "center",
-                minWidth: "80px",
+                display: "flex",
+                justifyContent: "center",
               }}
             >
               {product?.quantity}
             </Box>
 
+            {/* Total column */}
             <Box
               sx={{
-                fontSize: "16px",
-                fontWeight: "bold",
+                fontSize: "15px",
+                fontWeight: "700",
+                color: "#111827",
                 textAlign: "center",
-                minWidth: "100px",
+                display: "flex",
+                justifyContent: "center",
               }}
             >
               ${product?.orderedPrice}
             </Box>
           </Box>
         ))}
+      </Box>
+
+      {/* Footer Section */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          gap: "24px",
+          justifyContent: "space-between",
+          backgroundColor: "white",
+          borderRadius: "16px",
+          padding: "24px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+          marginTop: "8px",
+          "@media (max-width: 768px)": {
+            flexDirection: "column",
+            gap: "20px",
+          },
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+            flex: 1,
+            borderRadius: "12px",
+            padding: "16px",
+            backgroundColor: "rgba(249, 250, 251, 0.6)",
+          }}
+        >
+          <h3
+            style={{
+              margin: "0 0 8px 0",
+              fontSize: "17px",
+              color: "#111827",
+              fontWeight: "600",
+            }}
+          >
+            Shipping Details
+          </h3>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "100px 1fr",
+              gap: "8px",
+              fontSize: "14px",
+            }}
+          >
+            <span style={{ fontWeight: "600", color: "#4B5563" }}>
+              Address:
+            </span>
+            <span style={{ fontWeight: "400", color: "#111827" }}>
+              {data?.address || "N/A"}
+            </span>
+
+            <span style={{ fontWeight: "600", color: "#4B5563" }}>Phone:</span>
+            <span style={{ fontWeight: "400", color: "#111827" }}>
+              {data?.phoneNumber || "N/A"}
+            </span>
+
+            <span style={{ fontWeight: "600", color: "#4B5563" }}>Name:</span>
+            <span style={{ fontWeight: "400", color: "#111827" }}>
+              {data?.name || "N/A"}
+            </span>
+
+            <span style={{ fontWeight: "600", color: "#4B5563" }}>
+              Payment:
+            </span>
+            <span style={{ fontWeight: "400", color: "#111827" }}>COD</span>
+          </div>
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+            minWidth: "220px",
+            padding: "16px",
+            backgroundColor: "rgba(243, 244, 246, 0.7)",
+            borderRadius: "12px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+          }}
+        >
+          <h3
+            style={{
+              margin: "0 0 8px 0",
+              fontSize: "17px",
+              color: "#111827",
+              fontWeight: "600",
+            }}
+          >
+            Order Summary
+          </h3>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "auto auto",
+              gap: "8px",
+              justifyContent: "space-between",
+            }}
+          >
+            <span
+              style={{ fontWeight: "500", color: "#4B5563", fontSize: "14px" }}
+            >
+              SubTotal ({data?.products.length}):
+            </span>
+            <span
+              style={{
+                fontWeight: "600",
+                textAlign: "right",
+                fontSize: "14px",
+                color: "#111827",
+              }}
+            >
+              ${itemsAmount || "N/A"}
+            </span>
+
+            <span
+              style={{ fontWeight: "500", color: "#4B5563", fontSize: "14px" }}
+            >
+              Shipping:
+            </span>
+            <span
+              style={{
+                fontWeight: "600",
+                textAlign: "right",
+                fontSize: "14px",
+                color: "#111827",
+              }}
+            >
+              ${data?.shippingFee || "N/A"}
+            </span>
+
+            <Box
+              sx={{
+                height: "1px",
+                backgroundColor: "#e5e7eb",
+                gridColumn: "1 / -1",
+                margin: "8px 0",
+              }}
+            />
+
+            <span
+              style={{ fontWeight: "700", fontSize: "16px", color: "#111827" }}
+            >
+              Total:
+            </span>
+            <span
+              style={{
+                fontWeight: "700",
+                textAlign: "right",
+                fontSize: "16px",
+                color: "#111827",
+              }}
+            >
+              ${data?.totalAmount || "N/A"}
+            </span>
+          </div>
+        </Box>
       </Box>
     </Box>
   );

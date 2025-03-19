@@ -122,7 +122,7 @@ function CartPage() {
     },
   });
 
-  const sippingCharge = 3;
+  const sippingCharge = 5;
 
   const TotalPrice = Number(
     itemSelected.reduce((total, item) => total + item.price, 0).toFixed(2)
@@ -218,9 +218,11 @@ function CartPage() {
       address: address,
       name: name,
       phoneNumber: phoneNumber,
+      shippingFee: Number(sippingCharge),
+      totalAmount: Number(TotalCostPrice),
     };
 
-    // console.log("sendOrder", sendOrder);
+    console.log("sendOrder", sendOrder);
 
     addOrderMutation.mutate(sendOrder);
     itemSelected.forEach((item) => {
