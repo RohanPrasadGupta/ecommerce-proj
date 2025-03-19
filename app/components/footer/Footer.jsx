@@ -30,12 +30,13 @@ const Footer = () => {
                 component="div"
                 sx={{ fontWeight: "bold" }}
               >
-                ShopHub
+                THE CART
               </Typography>
             </Box>
             <Typography variant="body2" sx={{ mb: 2, color: "gray.300" }}>
-              A modern e-commerce platform built with React, Material UI, and
-              best practices for a seamless shopping experience.
+              A modern e-commerce platform built with Next JS, Material UI, and
+              backend is supported by MongoDB. It follows best practices for a
+              seamless shopping experience.
             </Typography>
             <Typography variant="body2" sx={{ color: "gray.400" }}>
               This project demonstrates responsive design, state management, API
@@ -111,13 +112,13 @@ const Footer = () => {
               Developer Contact
             </Typography>
             <Typography variant="body2" sx={{ mb: 2, color: "gray.300" }}>
-              This project was developed by Rohan Prasad as part of a front-end
-              development portfolio.
+              This project was developed by Rohan Prasad Gupta as part of a full
+              stack development portfolio.
             </Typography>
 
             <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
               <IconButton
-                href="https://linkedin.com/in/yourusername"
+                href="https://www.linkedin.com/in/rohanprasadgupta/"
                 target="_blank"
                 size="small"
                 sx={{
@@ -129,7 +130,7 @@ const Footer = () => {
                 <LinkedInIcon />
               </IconButton>
               <IconButton
-                href="https://github.com/yourusername"
+                href="https://github.com/RohanPrasadGupta"
                 target="_blank"
                 size="small"
                 sx={{
@@ -141,7 +142,7 @@ const Footer = () => {
                 <GitHubIcon />
               </IconButton>
               <IconButton
-                href="https://yourportfolio.com"
+                href="https://rohanpdgupta-portfolio.netlify.app/"
                 target="_blank"
                 size="small"
                 sx={{
@@ -153,7 +154,7 @@ const Footer = () => {
                 <LanguageIcon />
               </IconButton>
               <IconButton
-                href="mailto:your.email@example.com"
+                href="rohanprasadgupta4@gmail.com"
                 size="small"
                 sx={{
                   color: "#f1f1f1",
@@ -166,8 +167,8 @@ const Footer = () => {
             </Box>
 
             <Typography variant="body2" sx={{ color: "gray.400" }}>
-              Looking for opportunities in front-end development and React.js.
-              Feel free to contact for collaborations or job opportunities.
+              Looking for opportunities in Full Stack development. Feel free to
+              contact for collaborations or job opportunities.
             </Typography>
           </Grid>
         </Grid>
@@ -186,7 +187,7 @@ const Footer = () => {
             variant="body2"
             sx={{ color: "gray.400", mb: { xs: 1, sm: 0 } }}
           >
-            © {new Date().getFullYear()} ShopHub. All rights reserved.
+            © {new Date().getFullYear()} THE CART. All rights reserved.
           </Typography>
           <Typography
             variant="body2"
@@ -196,7 +197,7 @@ const Footer = () => {
             <FavoriteIcon
               sx={{ mx: 0.5, fontSize: "0.875rem", color: "#ef4444" }}
             />{" "}
-            by Rohan Prasad
+            by Rohan Prasad Gupta
           </Typography>
         </Box>
       </Container>
