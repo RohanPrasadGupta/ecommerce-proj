@@ -38,18 +38,41 @@ export default function OnGoingOrder() {
   const onGoingCartData = data && data.data ? data.data.orders : [];
 
   return (
-    <div className="flex flex-col md:flex-row bg-gray-100 p-6 ">
+    <div className="flex flex-col bg-gray-50 p-6">
+      <Box
+        sx={{
+          marginBottom: "20px",
+          padding: "10px 0",
+        }}
+      >
+        <h1 className="text-2xl font-semibold text-gray-800">Your Orders</h1>
+        <p className="text-sm text-gray-500">
+          Track and manage your recent orders
+        </p>
+      </Box>
+
       <Box sx={{ width: "100%" }}>
-        {onGoingCartData.length > 0 ? (
+        {status === "loading" ? (
+          <Box
+            sx={{ display: "flex", justifyContent: "center", padding: "40px" }}
+          >
+            <p>Loading your orders...</p>
+          </Box>
+        ) : onGoingCartData.length > 0 ? (
           onGoingCartData.map((item, index) => (
             <Box
               sx={{
-                marginBottom: "20px",
-                background: "#f4bcff",
-                padding: "10px 20px",
-                borderRadius: "12px",
-                boxShadow:
-                  "0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.08)",
+                marginBottom: "24px",
+                background: "linear-gradient(to right, #ffffff, #f8f9ff)",
+                padding: "16px 24px",
+                borderRadius: "16px",
+                boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.05)",
+                border: "1px solid #eaecf0",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                "&:hover": {
+                  transform: "translateY(-2px)",
+                  boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
+                },
               }}
               key={index}
             >
@@ -57,7 +80,10 @@ export default function OnGoingOrder() {
             </Box>
           ))
         ) : (
-          <EmptyData windowHeight="50vh" text="No data found." />
+          <EmptyData
+            windowHeight="50vh"
+            text="No orders found. Start shopping!"
+          />
         )}
       </Box>
     </div>
