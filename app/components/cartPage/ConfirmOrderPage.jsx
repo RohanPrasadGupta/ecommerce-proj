@@ -8,10 +8,9 @@ export default function ConfirmOrderPage() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "80vh",
       }}
     >
-      <EmptyData windowHeight="auto" text="No data found." />
+      <EmptyData windowHeight="50vh" text="No data found." />
     </div>
   );
 }

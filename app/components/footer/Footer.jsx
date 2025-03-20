@@ -8,7 +8,9 @@ import LanguageIcon from "@mui/icons-material/Language";
 import EmailIcon from "@mui/icons-material/Email";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
-import Grid from "@mui/material/Grid";
+import styles from "../navbar/navbarStyle.module.scss";
+import companyLogo from "../navbar/logo.jpg";
+import Image from "next/image";
 
 const Footer = () => {
   return (
@@ -21,10 +23,25 @@ const Footer = () => {
       }}
     >
       <Container maxWidth="lg">
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={4}>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-              <LocalMallIcon sx={{ mr: 1, fontSize: "2rem" }} />
+        <Box
+          container
+          spacing={4}
+          sx={{
+            display: "flex",
+            gap: 4,
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Box item xs={12} md={4}>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 2, gap: 2 }}>
+              <Image
+                className={styles.imageStyle}
+                src={companyLogo}
+                alt="Company Logo"
+                width={35}
+                height={35}
+              />
               <Typography
                 variant="h5"
                 component="div"
@@ -42,72 +59,9 @@ const Footer = () => {
               This project demonstrates responsive design, state management, API
               integration, and user authentication.
             </Typography>
-          </Grid>
+          </Box>
 
-          <Grid item xs={12} sm={6} md={2}>
-            <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 2 }}>
-              Quick Links
-            </Typography>
-            <Box component="ul" sx={{ pl: 0, listStyle: "none", m: 0 }}>
-              {["Home", "Products", "Categories", "Cart", "Orders"].map(
-                (item) => (
-                  <Box component="li" key={item} sx={{ mb: 1 }}>
-                    <Link href={`/${item.toLowerCase()}`} passHref>
-                      <Typography
-                        component="a"
-                        variant="body2"
-                        sx={{
-                          color: "gray.300",
-                          textDecoration: "none",
-                          "&:hover": {
-                            color: "white",
-                            textDecoration: "underline",
-                          },
-                        }}
-                      >
-                        {item}
-                      </Typography>
-                    </Link>
-                  </Box>
-                )
-              )}
-            </Box>
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={2}>
-            <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 2 }}>
-              Support
-            </Typography>
-            <Box component="ul" sx={{ pl: 0, listStyle: "none", m: 0 }}>
-              {["About", "Contact", "FAQ", "Privacy Policy", "Terms"].map(
-                (item) => (
-                  <Box component="li" key={item} sx={{ mb: 1 }}>
-                    <Link
-                      href={`/${item.toLowerCase().replace(" ", "-")}`}
-                      passHref
-                    >
-                      <Typography
-                        component="a"
-                        variant="body2"
-                        sx={{
-                          color: "gray.300",
-                          textDecoration: "none",
-                          "&:hover": {
-                            color: "white",
-                            textDecoration: "underline",
-                          },
-                        }}
-                      >
-                        {item}
-                      </Typography>
-                    </Link>
-                  </Box>
-                )
-              )}
-            </Box>
-          </Grid>
-
-          <Grid item xs={12} md={4}>
+          <Box item xs={12} md={4}>
             <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 2 }}>
               Developer Contact
             </Typography>
@@ -154,7 +108,7 @@ const Footer = () => {
                 <LanguageIcon />
               </IconButton>
               <IconButton
-                href="rohanprasadgupta4@gmail.com"
+                href="mailto:rohanprasadgupta4@gmail.com"
                 size="small"
                 sx={{
                   color: "#f1f1f1",
@@ -170,8 +124,8 @@ const Footer = () => {
               Looking for opportunities in Full Stack development. Feel free to
               contact for collaborations or job opportunities.
             </Typography>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
 
         <Divider sx={{ my: 4, borderColor: "rgba(255,255,255,0.1)" }} />
 
