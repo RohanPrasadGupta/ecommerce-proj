@@ -130,7 +130,7 @@ function CartPage() {
   const TotalCostPrice = TotalPrice + sippingCharge;
 
   if (cartData && cartData.length === 0) {
-    return <EmptyData windowHeight="90vh" text="Your cart is empty." />;
+    return <EmptyData windowHeight="50vh" text="Your cart is empty." />;
   }
 
   const handleIncrementCart = (item) => {
