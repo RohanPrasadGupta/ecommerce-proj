@@ -37,9 +37,8 @@ function PageContent() {
   const [viewMode, setViewMode] = useState("grid");
   const productsPerPage = 12;
 
-  // Query that depends on the category
   const { isPending, error, data } = useQuery({
-    queryKey: ["products", selectedCategory], // Add category to query key to refetch when it changes
+    queryKey: ["products", selectedCategory],
     queryFn: async () => {
       const URL = "https://e-combackend-jbal.onrender.com/getAllProducts";
       const cateURL = `https://e-combackend-jbal.onrender.com/getProductsByCategory?category=${selectedCategory}`;

@@ -503,7 +503,7 @@ function CartPage() {
                   </div>
 
                   {/* Shipping info */}
-                  <div className="space-y-4 mt-6 border-t border-gray-200 pt-6">
+                  <div className="space-y-4 mt-6 border-t border-gray-200 pt-6 mb-6">
                     <h3 className="text-base font-medium text-gray-900">
                       Shipping Information
                     </h3>
@@ -549,15 +549,16 @@ function CartPage() {
                     </div>
                   </div>
 
-                  <button
+                  <GlobalButton
                     onClick={handleCheckOut}
-                    className="w-full mt-6 bg-indigo-600 border border-transparent rounded-md py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    <div className="flex items-center justify-center">
+                    text="Complete Checkout"
+                    icon={
                       <LocalShippingIcon className="mr-2" fontSize="small" />
-                      Complete Checkout
-                    </div>
-                  </button>
+                    }
+                    height="54px"
+                    hoverEffect={true}
+                    type={"button"}
+                  />
                 </>
               )}
             </div>
