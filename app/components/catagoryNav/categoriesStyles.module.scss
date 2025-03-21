@@ -46,3 +46,19 @@
     transition: scale 0.3s ease;
   }
 }
+
+.categoryNavContainer {
+  background-color: #fff;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* For mobile filter button */
+@media (max-width: 768px) {
+  .categoryNavContainer {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+}
