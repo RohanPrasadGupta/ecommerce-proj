@@ -13,6 +13,7 @@ const DeleteComponent = ({
   deleteFunction,
   closeModal,
   isModelOpen,
+  isCancelOrder = false,
 }) => {
   return (
     <Modal
@@ -79,7 +80,7 @@ const DeleteComponent = ({
               component="h2"
               sx={{ fontWeight: 600, mb: 1 }}
             >
-              Remove {title}
+              {!isCancelOrder && "Remove"} {title}
             </Typography>
 
             <Box
@@ -102,7 +103,7 @@ const DeleteComponent = ({
                   fontWeight: 500,
                 }}
               >
-                Cancel
+                {isCancelOrder ? "No" : "Cancel"}
               </Button>
 
               <Button
@@ -120,7 +121,7 @@ const DeleteComponent = ({
                   },
                 }}
               >
-                Remove
+                {isCancelOrder ? "Cancel Order" : "Remove"}
               </Button>
             </Box>
           </Box>
