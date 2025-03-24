@@ -472,7 +472,7 @@ const CartOrderItemUI = ({ data }) => {
                   color: "#111827",
                 }}
               >
-                ${data?.totalAmount || "N/A"}
+                ${data?.totalAmount?.toFixed(2) || "N/A"}
               </span>
             </div>
           </Box>
